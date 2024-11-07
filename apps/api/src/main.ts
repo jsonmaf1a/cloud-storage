@@ -1,9 +1,18 @@
 import { NestFactory } from "@nestjs/core";
-import { AppModule } from "./App/app.module";
+import { AppModule } from "./app.module";
+
+const PORT = process.env.PORT;
 
 async function bootstrap() {
+    if (!PORT) {
+        console.error(
+            "Error: PORT environment variable is not defined. Server shutting down.",
+        );
+        return;
+    }
+
     const app = await NestFactory.create(AppModule);
-    console.log(`PORT: ${process.env.PORT}`);
-    await app.listen(process.env.PORT ?? 3000);
+    await app.listen(PORT);
 }
+
 bootstrap();
