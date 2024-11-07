@@ -1,0 +1,9 @@
+{
+    "tasks": {
+        "dev": {
+            "dependsOn": ["^dev"],
+            "persistent": true,
+            "cache": false
+        }
+    }
+}
