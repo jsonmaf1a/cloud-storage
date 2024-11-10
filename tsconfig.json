@@ -1,9 +1,16 @@
 {
     "compilerOptions": {
-        "include": ["apps/**/*", "packages/**/*"],
+        "include": [
+            "apps/**/*",
+            "packages/**/*"
+        ],
         "paths": {
-            "@api/*": ["./apps/api/src/*"],
-            "@web/*": ["./apps/web/src/*"]
+            "@api/*": [
+                "./apps/api/src/*"
+            ],
+            "@web/*": [
+                "./apps/web/src/*"
+            ]
             // "@desktop/*": ["./apps/desktop/src/*"]
             // "@shared/*": ["./packages/shared/src/*"]
         }

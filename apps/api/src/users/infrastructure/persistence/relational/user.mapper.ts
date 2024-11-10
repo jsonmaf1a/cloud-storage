@@ -1,4 +1,4 @@
-import { StatusEntity } from "@/statuses/infrastructure/status.entity";
+import { StatusEntity } from "@/statuses/infrastructure/persistence/status.entity";
 import { UserEntity } from "./user.entity";
 import { User } from "@/users/domain/user";
 
@@ -14,7 +14,7 @@ export class UserMapper {
         domainEntity.provider = raw.provider;
         domainEntity.firstName = raw.firstName;
         domainEntity.lastName = raw.lastName;
-        domainEntity.avatarUrl = raw.lastName;
+        domainEntity.avatarUrl = raw.avatarUrl;
         domainEntity.status = raw.status;
         domainEntity.createdAt = raw.createdAt;
         domainEntity.updatedAt = raw.updatedAt;

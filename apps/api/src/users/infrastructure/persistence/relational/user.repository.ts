@@ -7,9 +7,10 @@ import { User } from "@/users/domain/user";
 import { PaginationOptions } from "@/common/types/pagination-options";
 import { SortUserDto } from "@/users/dto/query-user.dto";
 import { UserMapper } from "./user.mapper";
+import { UserRepository } from "../user.repository";
 
 @Injectable()
-export class UsersRepository {
+export class UsersRelationalRepository implements UserRepository {
     constructor(
         @InjectRepository(UserEntity)
         private readonly usersRepository: Repository<UserEntity>,

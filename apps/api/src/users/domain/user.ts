@@ -1,6 +1,6 @@
 import { ExposeGroup } from "@/common/enums/expose-group";
 import { Nullable } from "@/common/types/nullable";
-import { Status } from "@/statuses/domain/status";
+import { StatusModel } from "@/statuses/domain/status";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
 
@@ -42,12 +42,12 @@ export class User {
     @ApiPropertyOptional({
         type: () => String,
     })
-    avatarUrl?: Nullable<string>;
+    avatarUrl?: string;
 
     @ApiProperty({
-        type: () => Status,
+        type: () => StatusModel,
     })
-    status?: Status;
+    status?: StatusModel;
 
     // @ApiProperty()
     // files: FileModel[];

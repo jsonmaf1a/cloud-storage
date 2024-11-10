@@ -8,12 +8,12 @@ import * as bcrypt from "bcrypt";
 import { User } from "./domain/user";
 import { Maybe } from "@/common/types/maybe";
 import { Nullable } from "@/common/types/nullable";
-import { Status } from "@/statuses/domain/status";
 import { AuthProviders } from "@/auth/auth-providers";
 import { UserRepository } from "./infrastructure/persistence/user.repository";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { SortUserDto } from "./dto/query-user.dto";
 import { PaginationOptions } from "@/common/types/pagination-options";
+import { StatusModel } from "@/statuses/domain/status";
 
 @Injectable()
 export class UsersService {
@@ -46,10 +46,10 @@ export class UsersService {
             email = createUserDto.email;
         }
 
-        let status: Maybe<Status> = undefined;
+        let status: Maybe<StatusModel> = undefined;
 
         if (createUserDto.status?.id) {
-            const statusObject = Object.values(Status)
+            const statusObject = Object.values(StatusModel)
                 .map(String)
                 .includes(String(createUserDto.status.id));
             if (!statusObject) {
@@ -148,10 +148,10 @@ export class UsersService {
             email = null;
         }
 
-        let status: Status | undefined = undefined;
+        let status: StatusModel | undefined = undefined;
 
         if (updateUserDto.status?.id) {
-            const statusObject = Object.values(Status)
+            const statusObject = Object.values(StatusModel)
                 .map(String)
                 .includes(String(updateUserDto.status.id));
             if (!statusObject) {
