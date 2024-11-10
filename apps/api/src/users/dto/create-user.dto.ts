@@ -1,6 +1,6 @@
 import { lowerCaseTransformer } from "@/common/transformers/lower-case.transformer";
 import { Nullable } from "@/common/types/nullable";
-import { Status } from "@/statuses/domain/status";
+import { StatusModel } from "@/statuses/domain/status";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
 import { IsEmail, IsNotEmpty, IsOptional, MinLength } from "class-validator";
@@ -28,10 +28,10 @@ export class CreateUserDto {
 
     @ApiPropertyOptional({ type: () => String })
     @IsOptional()
-    avatarUrl?: Nullable<string>;
+    avatarUrl?: string;
 
     @ApiProperty({
-        type: () => Status,
+        type: () => StatusModel,
     })
-    status?: Status;
+    status?: StatusModel;
 }

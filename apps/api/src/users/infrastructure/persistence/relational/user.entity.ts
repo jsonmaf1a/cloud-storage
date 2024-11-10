@@ -11,7 +11,7 @@ import {
     PrimaryGeneratedColumn,
     UpdateDateColumn,
 } from "typeorm";
-import { StatusEntity } from "@/statuses/infrastructure/status.entity";
+import { StatusEntity } from "@/statuses/infrastructure/persistence/status.entity";
 
 @Entity({
     name: "user",
@@ -40,7 +40,7 @@ export class UserEntity extends EntityHelper {
     lastName: Nullable<string>;
 
     @Column({ type: String, nullable: true })
-    avatarUrl?: Nullable<string>;
+    avatarUrl?: string;
 
     @ManyToOne(() => StatusEntity, {
         eager: true,
