@@ -48,7 +48,7 @@ export class MailService {
                 }),
                 "src",
                 "mail",
-                "mail-templates",
+                "templates",
                 "activation.hbs",
             ),
             context: {
@@ -102,7 +102,7 @@ export class MailService {
                 }),
                 "src",
                 "mail",
-                "mail-templates",
+                "templates",
                 "reset-password.hbs",
             ),
             context: {
@@ -153,7 +153,7 @@ export class MailService {
                 }),
                 "src",
                 "mail",
-                "mail-templates",
+                "templates",
                 "confirm-new-email.hbs",
             ),
             context: {

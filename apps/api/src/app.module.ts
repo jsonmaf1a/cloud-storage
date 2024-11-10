@@ -31,6 +31,37 @@ const ENV_FILE_PATH = ".env";
                 return new DataSource(options).initialize();
             },
         }),
+        I18nModule.forRootAsync({
+            useFactory: (configService: ConfigService<GeneralConfig>) => ({
+                fallbackLanguage: configService.getOrThrow(
+                    "app.fallbackLanguage",
+                    {
+                        infer: true,
+                    },
+                ),
+                loaderOptions: {
+                    path: path.join(__dirname, "/i18n/"),
+                    watch: true,
+                },
+            }),
+            resolvers: [
+                {
+                    use: HeaderResolver,
+                    useFactory: (
+                        configService: ConfigService<GeneralConfig>,
+                    ) => {
+                        return [
+                            configService.get("app.headerLanguage", {
+                                infer: true,
+                            }),
+                        ];
+                    },
+                    inject: [ConfigService],
+                },
+            ],
+            imports: [ConfigModule],
+            inject: [ConfigService],
+        }),
         UsersModule,
         AuthModule,
         SessionModule,

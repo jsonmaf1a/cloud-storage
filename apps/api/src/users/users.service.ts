@@ -14,6 +14,7 @@ import { UpdateUserDto } from "./dto/update-user.dto";
 import { SortUserDto } from "./dto/query-user.dto";
 import { PaginationOptions } from "@/common/types/pagination-options";
 import { StatusModel } from "@/statuses/domain/status";
+import { Status } from "@/statuses/statuses";
 
 @Injectable()
 export class UsersService {
@@ -49,7 +50,7 @@ export class UsersService {
         let status: Maybe<StatusModel> = undefined;
 
         if (createUserDto.status?.id) {
-            const statusObject = Object.values(StatusModel)
+            const statusObject = Object.values(Status)
                 .map(String)
                 .includes(String(createUserDto.status.id));
             if (!statusObject) {
@@ -151,7 +152,7 @@ export class UsersService {
         let status: StatusModel | undefined = undefined;
 
         if (updateUserDto.status?.id) {
-            const statusObject = Object.values(StatusModel)
+            const statusObject = Object.values(Status)
                 .map(String)
                 .includes(String(updateUserDto.status.id));
             if (!statusObject) {
