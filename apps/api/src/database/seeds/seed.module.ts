@@ -20,7 +20,13 @@ import { UserSeedModule } from "./user/user-seed.module";
         }),
         TypeOrmModule.forRootAsync({
             useClass: TypeOrmConfigService,
-            dataSourceFactory: async (options: DataSourceOptions) => {
+            dataSourceFactory: async (
+                options: DataSourceOptions | undefined,
+            ) => {
+                if (!options) {
+                    throw new Error("DataSource options are not provided.");
+                }
+
                 return new DataSource(options).initialize();
             },
         }),
