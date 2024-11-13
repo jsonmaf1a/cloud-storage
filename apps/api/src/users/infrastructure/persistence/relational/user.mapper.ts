@@ -12,13 +12,14 @@ export class UserMapper {
         domainEntity.email = raw.email;
         domainEntity.password = raw.password;
         domainEntity.provider = raw.provider;
+        domainEntity.socialId = raw.socialId;
         domainEntity.firstName = raw.firstName;
         domainEntity.lastName = raw.lastName;
         domainEntity.avatarUrl = raw.avatarUrl;
         domainEntity.status = raw.status;
-        domainEntity.createdAt = raw.createdAt;
-        domainEntity.updatedAt = raw.updatedAt;
-        domainEntity.deletedAt = raw.deletedAt;
+        domainEntity.createdAt = new Date(raw.createdAt);
+        domainEntity.updatedAt = new Date(raw.updatedAt);
+        domainEntity.deletedAt = raw.deletedAt ? new Date(raw.deletedAt) : null;
 
         return domainEntity;
     }
@@ -37,13 +38,16 @@ export class UserMapper {
         persistenceEntity.email = domainEntity.email;
         persistenceEntity.password = domainEntity.password;
         persistenceEntity.provider = domainEntity.provider;
+        persistenceEntity.socialId = domainEntity.socialId;
         persistenceEntity.firstName = domainEntity.firstName;
         persistenceEntity.lastName = domainEntity.lastName;
         persistenceEntity.avatarUrl = domainEntity.avatarUrl;
         persistenceEntity.status = status;
         persistenceEntity.createdAt = domainEntity.createdAt;
         persistenceEntity.updatedAt = domainEntity.updatedAt;
-        persistenceEntity.deletedAt = domainEntity.deletedAt;
+        persistenceEntity.deletedAt = domainEntity.deletedAt
+            ? domainEntity.deletedAt
+            : null;
 
         return persistenceEntity;
     }

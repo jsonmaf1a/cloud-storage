@@ -1,5 +1,5 @@
 import { lowerCaseTransformer } from "@/common/transformers/lower-case.transformer";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { StatusModel } from "@/statuses/domain/status";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Transform } from "class-transformer";
@@ -17,6 +17,8 @@ export class CreateUserDto {
     password?: string;
 
     provider?: string;
+
+    socialId?: Nullable<string>;
 
     @ApiProperty({ example: "John", type: String })
     @IsNotEmpty()

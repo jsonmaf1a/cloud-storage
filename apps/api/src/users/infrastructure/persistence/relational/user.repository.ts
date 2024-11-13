@@ -2,7 +2,7 @@ import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { FindOptionsWhere, In, Repository } from "typeorm";
 import { UserEntity } from "./user.entity";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { User } from "@/users/domain/user";
 import { PaginationOptions } from "@/common/types/pagination-options";
 import { SortUserDto } from "@/users/dto/query-user.dto";
@@ -78,15 +78,17 @@ export class UsersRelationalRepository implements UserRepository {
         return entity ? UserMapper.toDomain(entity) : null;
     }
 
-    async findByProvider({
+    async findBySocialIdAndProvider({
+        socialId,
         provider,
     }: {
+        socialId: User["socialId"];
         provider: User["provider"];
     }): Promise<Nullable<User>> {
-        if (!provider) return null;
+        if (!socialId || !provider) return null;
 
         const entity = await this.usersRepository.findOne({
-            where: { provider },
+            where: { socialId, provider },
         });
 
         return entity ? UserMapper.toDomain(entity) : null;

@@ -1,20 +1,20 @@
+import { AuthProviders } from "@/auth/auth-providers";
+import { PaginationOptions } from "@/common/types/pagination-options";
+import { StatusModel } from "@/statuses/domain/status";
+import { Status } from "@/statuses/statuses";
+import { Maybe } from "@cloud/shared";
 import {
     HttpStatus,
     Injectable,
     UnprocessableEntityException,
 } from "@nestjs/common";
-import { CreateUserDto } from "./dto/create-user.dto";
 import * as bcrypt from "bcrypt";
 import { User } from "./domain/user";
-import { Maybe } from "@/common/types/maybe";
-import { Nullable } from "@/common/types/nullable";
-import { AuthProviders } from "@/auth/auth-providers";
-import { UserRepository } from "./infrastructure/persistence/user.repository";
-import { UpdateUserDto } from "./dto/update-user.dto";
+import { CreateUserDto } from "./dto/create-user.dto";
 import { SortUserDto } from "./dto/query-user.dto";
-import { PaginationOptions } from "@/common/types/pagination-options";
-import { StatusModel } from "@/statuses/domain/status";
-import { Status } from "@/statuses/statuses";
+import { UpdateUserDto } from "./dto/update-user.dto";
+import { UserRepository } from "./infrastructure/persistence/user.repository";
+import { Nullable } from "@cloud/shared";
 
 @Injectable()
 export class UsersService {
@@ -22,14 +22,12 @@ export class UsersService {
 
     async create(createUserDto: CreateUserDto): Promise<User> {
         let password: Maybe<string> = undefined;
-
         if (createUserDto.password) {
             const salt = await bcrypt.genSalt();
             password = await bcrypt.hash(createUserDto.password, salt);
         }
 
         let email: Nullable<string> = null;
-
         if (createUserDto.email) {
             const userObject = await this.usersRepository.findByEmail(
                 createUserDto.email,
@@ -48,7 +46,6 @@ export class UsersService {
         }
 
         let status: Maybe<StatusModel> = undefined;
-
         if (createUserDto.status?.id) {
             const statusObject = Object.values(Status)
                 .map(String)
@@ -75,6 +72,7 @@ export class UsersService {
             avatarUrl: createUserDto.avatarUrl,
             status: status,
             provider: createUserDto.provider ?? AuthProviders.Email,
+            socialId: createUserDto.socialId,
         });
     }
 
@@ -103,12 +101,15 @@ export class UsersService {
         return this.usersRepository.findByEmail(email);
     }
 
-    findByProvider({
+    findBySocialIdAndProvider({
+        socialId,
         provider,
     }: {
+        socialId: User["socialId"];
         provider: User["provider"];
     }): Promise<Nullable<User>> {
-        return this.usersRepository.findByProvider({
+        return this.usersRepository.findBySocialIdAndProvider({
+            socialId,
             provider,
         });
     }
@@ -118,7 +119,6 @@ export class UsersService {
         updateUserDto: UpdateUserDto,
     ): Promise<User | null> {
         let password: Maybe<string> = undefined;
-
         if (updateUserDto.password) {
             const userObject = await this.usersRepository.findById(id);
 
@@ -128,8 +128,7 @@ export class UsersService {
             }
         }
 
-        let email: string | null | undefined = undefined;
-
+        let email: Maybe<Nullable<string>> = undefined;
         if (updateUserDto.email) {
             const userObject = await this.usersRepository.findByEmail(
                 updateUserDto.email,
@@ -149,8 +148,7 @@ export class UsersService {
             email = null;
         }
 
-        let status: StatusModel | undefined = undefined;
-
+        let status: Maybe<StatusModel> = undefined;
         if (updateUserDto.status?.id) {
             const statusObject = Object.values(Status)
                 .map(String)
@@ -169,6 +167,8 @@ export class UsersService {
             };
         }
 
+        console.log(`Updated status: ${status}`);
+
         return this.usersRepository.update(id, {
             firstName: updateUserDto.firstName,
             lastName: updateUserDto.lastName,
@@ -177,6 +177,7 @@ export class UsersService {
             status,
             provider: updateUserDto.provider,
             avatarUrl: updateUserDto.avatarUrl,
+            socialId: updateUserDto.socialId,
         });
     }
 
