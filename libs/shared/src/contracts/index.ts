@@ -1,3 +1,3 @@
-export { ApiContract } from "./api.contract";
-export { AuthContract } from "./auth.contract";
-export { UsersContract } from "./users.contract";
+export * from "./api.contract";
+export * from "./auth.contract";
+export * from "./users.contract";

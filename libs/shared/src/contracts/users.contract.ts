@@ -69,4 +69,4 @@ export const UsersContract = c.router(
     },
 );
 
-export type UsersContract = typeof UsersContract;
+export type UsersContractType = typeof UsersContract;

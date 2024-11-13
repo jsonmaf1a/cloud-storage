@@ -128,4 +128,4 @@ export const AuthContract = c.router(
     },
 );
 
-export type AuthContract = typeof AuthContract;
+export type AuthContractType = typeof AuthContract;

@@ -26,4 +26,4 @@ export const ApiContract = c.router(
     },
 );
 
-export type ApiContract = typeof ApiContract;
+export type ApiContractType = typeof ApiContract;
