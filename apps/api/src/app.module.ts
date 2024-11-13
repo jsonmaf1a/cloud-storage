@@ -15,6 +15,7 @@ import mailConfig from "./mail/config/mail.config";
 import { HeaderResolver, I18nModule } from "nestjs-i18n";
 import { GeneralConfig } from "./config/general.config";
 import path from "node:path";
+import { TsRestModule } from "@ts-rest/nest";
 
 const ENV_FILE_PATH = ".env";
 
@@ -22,12 +23,23 @@ const ENV_FILE_PATH = ".env";
     imports: [
         ConfigModule.forRoot({
             isGlobal: true,
-            load: [appConfig, authConfig, databaseConfig, mailConfig], // NOTE: dont forget to load other configs
+            load: [appConfig, authConfig, databaseConfig, mailConfig],
             envFilePath: [ENV_FILE_PATH],
+        }),
+        TsRestModule.register({
+            isGlobal: true,
+            jsonQuery: true,
+            validateResponses: true,
         }),
         TypeOrmModule.forRootAsync({
             useClass: TypeOrmConfigService,
-            dataSourceFactory: async (options: DataSourceOptions) => {
+            dataSourceFactory: async (
+                options: DataSourceOptions | undefined,
+            ) => {
+                if (!options) {
+                    throw new Error("DataSource options are not provided.");
+                }
+
                 return new DataSource(options).initialize();
             },
         }),
@@ -40,7 +52,7 @@ const ENV_FILE_PATH = ".env";
                     },
                 ),
                 loaderOptions: {
-                    path: path.join(__dirname, "/i18n/"),
+                    path: path.join(__dirname, "../i18n/"),
                     watch: true,
                 },
             }),
