@@ -7,7 +7,6 @@ import {
     MinLength,
 } from "class-validator";
 import { Transform } from "class-transformer";
-import { Nullable } from "@/common/types/nullable";
 import { lowerCaseTransformer } from "@/common/transformers/lower-case.transformer";
 
 export class AuthUpdateDto {

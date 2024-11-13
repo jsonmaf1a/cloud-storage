@@ -1,0 +1,527 @@
+{
+    "openapi": "3.0.0",
+    "paths": {
+        "/api/users": {
+            "post": {
+                "operationId": "UsersController_create",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/CreateUserDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Users"]
+            },
+            "get": {
+                "operationId": "UsersController_findAll",
+                "parameters": [
+                    {
+                        "name": "page",
+                        "required": false,
+                        "in": "query",
+                        "schema": { "type": "number" }
+                    },
+                    {
+                        "name": "limit",
+                        "required": false,
+                        "in": "query",
+                        "schema": { "type": "number" }
+                    },
+                    {
+                        "name": "sort",
+                        "required": false,
+                        "in": "query",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Users"]
+            }
+        },
+        "/api/users/{id}": {
+            "get": {
+                "operationId": "UsersController_findOne",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Users"]
+            },
+            "patch": {
+                "operationId": "UsersController_update",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/UpdateUserDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Users"]
+            },
+            "delete": {
+                "operationId": "UsersController_remove",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "required": true,
+                        "in": "path",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": { "204": { "description": "" } },
+                "security": [{ "bearer": [] }],
+                "tags": ["Users"]
+            }
+        },
+        "/api/auth/email/login": {
+            "post": {
+                "operationId": "AuthController_login",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthEmailLoginDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/LoginResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/email/register": {
+            "post": {
+                "operationId": "AuthController_register",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthRegisterLoginDto"
+                            }
+                        }
+                    }
+                },
+                "responses": { "204": { "description": "" } },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/email/confirm": {
+            "post": {
+                "operationId": "AuthController_confirmEmail",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                            }
+                        }
+                    }
+                },
+                "responses": { "204": { "description": "" } },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/email/confirm/new": {
+            "post": {
+                "operationId": "AuthController_confirmNewEmail",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthConfirmEmailDto"
+                            }
+                        }
+                    }
+                },
+                "responses": { "204": { "description": "" } },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/forgot/password": {
+            "post": {
+                "operationId": "AuthController_forgotPassword",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthForgotPasswordDto"
+                            }
+                        }
+                    }
+                },
+                "responses": { "204": { "description": "" } },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/reset/password": {
+            "post": {
+                "operationId": "AuthController_resetPassword",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthResetPasswordDto"
+                            }
+                        }
+                    }
+                },
+                "responses": { "204": { "description": "" } },
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/me": {
+            "get": {
+                "operationId": "AuthController_me",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Auth"]
+            },
+            "patch": {
+                "operationId": "AuthController_update",
+                "parameters": [],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "$ref": "#/components/schemas/AuthUpdateDto"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/User"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Auth"]
+            },
+            "delete": {
+                "operationId": "AuthController_delete",
+                "parameters": [],
+                "responses": { "204": { "description": "" } },
+                "security": [{ "bearer": [] }],
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/refresh": {
+            "post": {
+                "operationId": "AuthController_refresh",
+                "parameters": [],
+                "responses": {
+                    "200": {
+                        "description": "",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "$ref": "#/components/schemas/RefreshResponseDto"
+                                }
+                            }
+                        }
+                    }
+                },
+                "security": [{ "bearer": [] }],
+                "tags": ["Auth"]
+            }
+        },
+        "/api/auth/logout": {
+            "post": {
+                "operationId": "AuthController_logout",
+                "parameters": [],
+                "responses": { "204": { "description": "" } },
+                "security": [{ "bearer": [] }],
+                "tags": ["Auth"]
+            }
+        }
+    },
+    "info": {
+        "title": "Cloud Storage API",
+        "description": "Cloud Storage API docs",
+        "version": "1.0",
+        "contact": {}
+    },
+    "tags": [],
+    "servers": [],
+    "components": {
+        "securitySchemes": {
+            "bearer": {
+                "scheme": "bearer",
+                "bearerFormat": "JWT",
+                "type": "http"
+            }
+        },
+        "schemas": {
+            "StatusModel": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "number" },
+                    "name": { "type": "string", "example": "active" }
+                },
+                "required": ["id", "name"]
+            },
+            "CreateUserDto": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@mail.com"
+                    },
+                    "password": { "type": "string" },
+                    "firstName": { "type": "string", "example": "John" },
+                    "lastName": { "type": "string", "example": "Doe" },
+                    "avatarUrl": { "type": "string" },
+                    "status": { "$ref": "#/components/schemas/StatusModel" }
+                },
+                "required": [
+                    "email",
+                    "password",
+                    "firstName",
+                    "lastName",
+                    "status"
+                ]
+            },
+            "User": {
+                "type": "object",
+                "properties": {
+                    "id": { "type": "number" },
+                    "email": {
+                        "type": "string",
+                        "example": "example@mail.com"
+                    },
+                    "provider": { "type": "string", "example": "email" },
+                    "socialId": { "type": "string", "example": "1234567890" },
+                    "firstName": { "type": "string", "example": "John" },
+                    "lastName": { "type": "string", "example": "Doe" },
+                    "avatarUrl": { "type": "string" },
+                    "status": { "$ref": "#/components/schemas/StatusModel" },
+                    "createdAt": { "format": "date-time", "type": "string" },
+                    "updatedAt": { "format": "date-time", "type": "string" },
+                    "deletedAt": { "format": "date-time", "type": "string" }
+                },
+                "required": [
+                    "id",
+                    "email",
+                    "provider",
+                    "socialId",
+                    "firstName",
+                    "lastName",
+                    "status",
+                    "createdAt",
+                    "updatedAt",
+                    "deletedAt"
+                ]
+            },
+            "StatusDto": {
+                "type": "object",
+                "properties": { "id": { "type": "number" } },
+                "required": ["id"]
+            },
+            "UpdateUserDto": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "test1@example.com"
+                    },
+                    "password": { "type": "string" },
+                    "firstName": { "type": "string", "example": "John" },
+                    "lastName": { "type": "string", "example": "Doe" },
+                    "avatarUrl": { "type": "string" },
+                    "status": { "$ref": "#/components/schemas/StatusDto" }
+                }
+            },
+            "AuthEmailLoginDto": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@mail.com"
+                    },
+                    "password": { "type": "string" }
+                },
+                "required": ["email", "password"]
+            },
+            "LoginResponseDto": {
+                "type": "object",
+                "properties": {
+                    "token": { "type": "string" },
+                    "refreshToken": { "type": "string" },
+                    "tokenExpires": { "type": "number" },
+                    "user": { "$ref": "#/components/schemas/User" }
+                },
+                "required": ["token", "refreshToken", "tokenExpires", "user"]
+            },
+            "AuthRegisterLoginDto": {
+                "type": "object",
+                "properties": {
+                    "email": {
+                        "type": "string",
+                        "example": "example@mail.com"
+                    },
+                    "password": { "type": "string" },
+                    "firstName": { "type": "string", "example": "John" },
+                    "lastName": { "type": "string", "example": "Doe" }
+                },
+                "required": ["email", "password", "firstName", "lastName"]
+            },
+            "AuthConfirmEmailDto": {
+                "type": "object",
+                "properties": { "hash": { "type": "string" } },
+                "required": ["hash"]
+            },
+            "AuthForgotPasswordDto": {
+                "type": "object",
+                "properties": {
+                    "email": { "type": "string", "example": "example@mail.com" }
+                },
+                "required": ["email"]
+            },
+            "AuthResetPasswordDto": {
+                "type": "object",
+                "properties": {
+                    "password": { "type": "string" },
+                    "hash": { "type": "string" }
+                },
+                "required": ["password", "hash"]
+            },
+            "RefreshResponseDto": {
+                "type": "object",
+                "properties": {
+                    "token": { "type": "string" },
+                    "refreshToken": { "type": "string" },
+                    "tokenExpires": { "type": "number" }
+                },
+                "required": ["token", "refreshToken", "tokenExpires"]
+            },
+            "AuthUpdateDto": {
+                "type": "object",
+                "properties": {
+                    "avatarUrl": { "type": "string" },
+                    "firstName": { "type": "string", "example": "John" },
+                    "lastName": { "type": "string", "example": "Doe" },
+                    "email": {
+                        "type": "string",
+                        "example": "example@mail.com"
+                    },
+                    "password": { "type": "string" },
+                    "oldPassword": { "type": "string" }
+                }
+            }
+        }
+    }
+}
+

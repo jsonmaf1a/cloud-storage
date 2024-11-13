@@ -1,18 +1,21 @@
 {
-    "compilerOptions": {
-        "include": [
-            "apps/**/*",
-            "packages/**/*"
-        ],
-        "paths": {
-            "@api/*": [
-                "./apps/api/src/*"
-            ],
-            "@web/*": [
-                "./apps/web/src/*"
-            ]
-            // "@desktop/*": ["./apps/desktop/src/*"]
-            // "@shared/*": ["./packages/shared/src/*"]
+    "extends": "./tsconfig.base.json",
+    "references": [
+        {
+            "path": "./libs/shared"
+        },
+        {
+            "path": "./apps/api"
+        },
+        {
+            "path": "./apps/web"
         }
-    }
+    ],
+    "files": [],
+    "exclude": [
+        "node_modules",
+        "test",
+        "dist",
+        "**/*spec.ts"
+    ]
 }
