@@ -21,6 +21,7 @@
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
         "paths": {
+            "@/*": ["./src/*"],
             "@cloud/shared": ["./libs/shared/src"]
         }
     },
