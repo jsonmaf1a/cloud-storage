@@ -1,3 +1,7 @@
+import { InfinitePaginationResponseDto } from "@/common/dto/infinite-pagination-response.dto";
+import { ExposeGroup } from "@/common/enums/expose-group";
+import { infinitePagination } from "@/common/utils/infinite-pagination";
+import { Nullable } from "@cloud/shared";
 import {
     Body,
     Controller,
@@ -12,7 +16,7 @@ import {
     SerializeOptions,
     UseGuards,
 } from "@nestjs/common";
-import { UsersService } from "./users.service";
+import { AuthGuard } from "@nestjs/passport";
 import {
     ApiBearerAuth,
     ApiCreatedResponse,
@@ -20,15 +24,11 @@ import {
     ApiParam,
     ApiTags,
 } from "@nestjs/swagger";
-import { AuthGuard } from "@nestjs/passport";
-import { ExposeGroup } from "@/common/enums/expose-group";
 import { User } from "./domain/user";
 import { CreateUserDto } from "./dto/create-user.dto";
 import { QueryUserDto } from "./dto/query-user.dto";
-import { InfinitePaginationResponseDto } from "@/common/dto/infinite-pagination-response.dto";
-import { infinitePagination } from "@/common/utils/infinite-pagination";
-import { Nullable } from "@/common/types/nullable";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { UsersService } from "./users.service";
 
 @ApiBearerAuth()
 @UseGuards(AuthGuard("jwt"))
@@ -85,7 +85,7 @@ export class UsersController {
         type: User,
     })
     @SerializeOptions({
-        groups: ["admin"],
+        groups: [ExposeGroup.Admin],
     })
     @Get(":id")
     @HttpCode(HttpStatus.OK)

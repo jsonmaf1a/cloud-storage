@@ -3,7 +3,7 @@ import { CreateUserDto } from "./create-user.dto";
 import { Transform, Type } from "class-transformer";
 import { lowerCaseTransformer } from "@/common/transformers/lower-case.transformer";
 import { IsEmail, IsOptional, MinLength } from "class-validator";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { StatusDto } from "@/statuses/dto/status.dto";
 
 export class UpdateUserDto extends PartialType(CreateUserDto) {
@@ -19,6 +19,8 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
     password?: string;
 
     provider?: string;
+
+    socialId?: Nullable<string>;
 
     @ApiPropertyOptional({ example: "John", type: String })
     @IsOptional()

@@ -1,6 +1,6 @@
 import { AuthProviders } from "@/auth/auth-providers";
 import { EntityHelper } from "@/common/utils/entity-helper";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import {
     Column,
     CreateDateColumn,
@@ -33,6 +33,10 @@ export class UserEntity extends EntityHelper {
 
     @Index()
     @Column({ type: String, nullable: true })
+    socialId?: Nullable<string>;
+
+    @Index()
+    @Column({ type: String, nullable: true })
     firstName: Nullable<string>;
 
     @Index()
@@ -53,6 +57,6 @@ export class UserEntity extends EntityHelper {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @DeleteDateColumn()
-    deletedAt: Date;
+    @DeleteDateColumn({ nullable: true })
+    deletedAt: Nullable<Date>;
 }

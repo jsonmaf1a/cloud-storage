@@ -1,5 +1,5 @@
 import { ExposeGroup } from "@/common/enums/expose-group";
-import { Nullable } from "@/common/types/nullable";
+import { Maybe, Nullable } from "@cloud/shared";
 import { StatusModel } from "@/statuses/domain/status";
 import { ApiProperty, ApiPropertyOptional } from "@nestjs/swagger";
 import { Exclude, Expose } from "class-transformer";
@@ -29,6 +29,13 @@ export class User {
 
     @ApiProperty({
         type: String,
+        example: "1234567890",
+    })
+    @Expose({ groups: [ExposeGroup.Self] })
+    socialId?: Nullable<string>;
+
+    @ApiProperty({
+        type: String,
         example: "John",
     })
     firstName: Nullable<string>;
@@ -47,7 +54,7 @@ export class User {
     @ApiProperty({
         type: () => StatusModel,
     })
-    status?: StatusModel;
+    status?: Maybe<StatusModel>;
 
     // @ApiProperty()
     // files: FileModel[];
@@ -62,5 +69,5 @@ export class User {
     updatedAt: Date;
 
     @ApiProperty()
-    deletedAt: Date;
+    deletedAt: Nullable<Date>;
 }

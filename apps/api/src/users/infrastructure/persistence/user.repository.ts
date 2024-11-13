@@ -1,4 +1,4 @@
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { PaginationOptions } from "@/common/types/pagination-options";
 import { User } from "@/users/domain/user";
 import { SortUserDto } from "@/users/dto/query-user.dto";
@@ -20,9 +20,11 @@ export abstract class UserRepository {
     abstract findById(id: User["id"]): Promise<Nullable<User>>;
     abstract findByIds(ids: User["id"][]): Promise<User[]>;
     abstract findByEmail(email: User["email"]): Promise<Nullable<User>>;
-    abstract findByProvider({
+    abstract findBySocialIdAndProvider({
+        socialId,
         provider,
     }: {
+        socialId: User["socialId"];
         provider: User["provider"];
     }): Promise<Nullable<User>>;
 
