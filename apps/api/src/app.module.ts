@@ -40,6 +40,8 @@ const ENV_FILE_PATH = ".env";
                     throw new Error("DataSource options are not provided.");
                 }
 
+                console.log(options);
+
                 return new DataSource(options).initialize();
             },
         }),

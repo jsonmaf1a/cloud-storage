@@ -7,6 +7,6 @@
             { "include": "i18n/**/*", "watchAssets": true, "outDir": "dist" }
         ],
         "typeCheck": true,
-        "builder": "swc"
+        "builder": "tsc"
     }
 }

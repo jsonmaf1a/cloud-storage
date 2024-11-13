@@ -9,6 +9,7 @@ import {
     Index,
     ManyToOne,
     PrimaryGeneratedColumn,
+    Relation,
     UpdateDateColumn,
 } from "typeorm";
 import { StatusEntity } from "@/statuses/infrastructure/persistence/status.entity";
@@ -49,7 +50,7 @@ export class UserEntity extends EntityHelper {
     @ManyToOne(() => StatusEntity, {
         eager: true,
     })
-    status?: StatusEntity;
+    status?: Relation<StatusEntity>;
 
     @CreateDateColumn()
     createdAt: Date;
