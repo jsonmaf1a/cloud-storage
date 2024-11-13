@@ -7,6 +7,9 @@
         },
         "lint": {
             "dependsOn": ["^lint"]
+        },
+        "lint:ts": {
+            "dependsOn": ["^lint:ts"]
         }
     }
 }

@@ -5,7 +5,8 @@
     "scripts": {
         "dev": "turbo dev",
         "build": "turbo build",
-        "lint": "turbo lint"
+        "lint": "turbo lint",
+        "lint:ts": "turbo lint:ts"
     },
     "packageManager": "pnpm@9.12.3",
     "author": "kkk-petrov",
