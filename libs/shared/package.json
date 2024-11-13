@@ -1,0 +1,40 @@
+{
+    "name": "@cloud/shared",
+    "version": "1.0.0",
+    "private": true,
+    "main": "dist/index.js",
+    "types": "dist/index.d.ts",
+    "exports": {
+        ".": {
+            "import": {
+                "types": "./dist/index.d.ts",
+                "development": "./src/index.ts",
+                "default": "./dist/index.js"
+            },
+            "require": {
+                "types": "./dist/index.d.ts",
+                "default": "./dist/index.js"
+            }
+        },
+        "./package.json": "./package.json"
+    },
+    "files": ["dist"],
+    "scripts": {
+        "build": "tsc --build",
+        "lint": "biome lint --error-on-warnings src"
+    },
+    "devDependencies": {
+        "@biomejs/biome": "1.9.4",
+        "@types/node": "^20.17.6",
+        "openapi-typescript": "^7.4.3",
+        "openapi-zod-client": "^1.18.2",
+        "tsx": "^4.19.2",
+        "typescript": "^5.6.3"
+    },
+    "dependencies": {
+        "@ts-rest/core": "^3.51.0",
+        "@zodios/core": "^10.9.6",
+        "openapi-fetch": "^0.13.0",
+        "zod": "^3.23.8"
+    }
+}

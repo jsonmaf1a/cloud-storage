@@ -1,4 +1,4 @@
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { Session } from "@/session/domain/session";
 import { User } from "@/users/domain/user";
 

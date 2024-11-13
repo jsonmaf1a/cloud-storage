@@ -3,14 +3,14 @@ import { IsEmail, IsNotEmpty, MinLength } from "class-validator";
 import { Transform } from "class-transformer";
 import { lowerCaseTransformer } from "@/common/transformers/lower-case.transformer";
 
-export class AuthRegisterLoginDto {
+export class AuthRegisterDto {
     @ApiProperty({ example: "example@mail.com", type: String })
     @Transform(lowerCaseTransformer)
     @IsEmail()
     email: string;
 
     @ApiProperty()
-    @MinLength(6)
+    @MinLength(10)
     password: string;
 
     @ApiProperty({ example: "John" })

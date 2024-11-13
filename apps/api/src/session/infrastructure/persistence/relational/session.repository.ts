@@ -3,7 +3,7 @@ import { SessionRepository } from "../session.repository";
 import { InjectRepository } from "@nestjs/typeorm";
 import { SessionEntity } from "./session.entity";
 import { Not, Repository } from "typeorm";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 import { Session } from "@/session/domain/session";
 import { SessionMapper } from "./session.mapper";
 import { User } from "@/users/domain/user";

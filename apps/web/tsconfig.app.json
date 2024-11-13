@@ -1,13 +1,10 @@
 {
+    "extends": "../../tsconfig.base.json",
     "compilerOptions": {
         "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo",
         "target": "ES2020",
         "useDefineForClassFields": true,
-        "lib": [
-            "ES2020",
-            "DOM",
-            "DOM.Iterable"
-        ],
+        "lib": ["ES2020", "DOM", "DOM.Iterable"],
         "module": "ESNext",
         "skipLibCheck": true,
         /* Bundler mode */
@@ -23,14 +20,9 @@
         "noUnusedParameters": true,
         "noFallthroughCasesInSwitch": true,
         "noUncheckedSideEffectImports": true,
-        "baseUrl": "./",
         "paths": {
-            "@/*": [
-                "./src/*"
-            ]
+            "@cloud/shared": ["./libs/shared/src"]
         }
     },
-    "include": [
-        "src"
-    ]
+    "include": ["./src/**/*"]
 }

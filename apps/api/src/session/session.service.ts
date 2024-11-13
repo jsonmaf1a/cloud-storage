@@ -3,7 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { SessionRepository } from "./infrastructure/persistence/session.repository";
 import { Session } from "./domain/session";
 import { User } from "../users/domain/user";
-import { Nullable } from "@/common/types/nullable";
+import { Nullable } from "@cloud/shared";
 
 @Injectable()
 export class SessionService {

@@ -1,9 +1,9 @@
 import * as crypto from "node:crypto";
-import { Nullable } from "@/common/types/nullable";
 import { GeneralConfig } from "@/config/general.config";
 import { MailService } from "@/mail/mail.service";
 import { Session } from "@/session/domain/session";
 import { SessionService } from "@/session/session.service";
+import { SocialData } from "@/social/social.interface";
 import { Status } from "@/statuses/statuses";
 import { User } from "@/users/domain/user";
 import { UsersService } from "@/users/users.service";
@@ -20,12 +20,13 @@ import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
 import ms from "ms";
 import { AuthProviders } from "./auth-providers";
-import { AuthEmailLoginDto } from "./dto/auth-email-login.dto";
-import { AuthRegisterLoginDto } from "./dto/auth-register-login.dto";
 import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayload } from "./types/jwt-payload";
 import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
+import { AuthLoginDto } from "./dto/auth-login.dto";
+import { AuthRegisterDto } from "./dto/auth-register.dto";
+import { Nullable } from "@cloud/shared";
 
 @Injectable()
 export class AuthService {
@@ -37,9 +38,7 @@ export class AuthService {
         private configService: ConfigService<GeneralConfig>,
     ) {}
 
-    async validateLogin(
-        loginDto: AuthEmailLoginDto,
-    ): Promise<LoginResponseDto> {
+    async validateLogin(loginDto: AuthLoginDto): Promise<LoginResponseDto> {
         const user = await this.usersService.findByEmail(loginDto.email);
 
         if (!user) {
@@ -107,9 +106,87 @@ export class AuthService {
         };
     }
 
-    // TODO: handle login with socials
+    async validateSocialLogin(
+        authProvider: string,
+        socialData: SocialData,
+    ): Promise<LoginResponseDto> {
+        let user: Nullable<User> = null;
+        const socialEmail = socialData.email?.toLowerCase();
+        let userByEmail: Nullable<User> = null;
 
-    async register(dto: AuthRegisterLoginDto): Promise<void> {
+        if (socialEmail) {
+            userByEmail = await this.usersService.findByEmail(socialEmail);
+        }
+
+        if (socialData.id) {
+            user = await this.usersService.findBySocialIdAndProvider({
+                socialId: socialData.id,
+                provider: authProvider,
+            });
+        }
+
+        if (user) {
+            if (socialEmail && !userByEmail) {
+                user.email = socialEmail;
+            }
+            await this.usersService.update(user.id, user);
+        } else if (userByEmail) {
+            user = userByEmail;
+        } else if (socialData.id) {
+            const status = {
+                id: Status.Active,
+            };
+
+            user = await this.usersService.create({
+                email: socialEmail ?? null,
+                firstName: socialData.firstName ?? null,
+                lastName: socialData.lastName ?? null,
+                socialId: socialData.id,
+                provider: authProvider,
+                status,
+            });
+
+            user = await this.usersService.findById(user.id);
+        }
+
+        if (!user) {
+            throw new UnprocessableEntityException({
+                status: HttpStatus.UNPROCESSABLE_ENTITY,
+                errors: {
+                    user: "userNotFound",
+                },
+            });
+        }
+
+        const hash = crypto
+            .createHash("sha256")
+            .update(randomStringGenerator())
+            .digest("hex");
+
+        const session = await this.sessionService.create({
+            user,
+            hash,
+        });
+
+        const {
+            token: jwtToken,
+            refreshToken,
+            tokenExpires,
+        } = await this.getTokensData({
+            id: user.id,
+            sessionId: session.id,
+            hash,
+        });
+
+        return {
+            refreshToken,
+            token: jwtToken,
+            tokenExpires,
+            user,
+        };
+    }
+
+    async register(dto: AuthRegisterDto): Promise<void> {
         const user = await this.usersService.create({
             ...dto,
             email: dto.email,
@@ -219,6 +296,7 @@ export class AuthService {
         }
 
         const user = await this.usersService.findById(userId);
+        console.log(user);
 
         if (!user) {
             throw new NotFoundException({
@@ -231,6 +309,8 @@ export class AuthService {
         user.status = {
             id: Status.Active,
         };
+
+        console.log(user);
 
         await this.usersService.update(user.id, user);
     }
