@@ -1,11 +1,4 @@
 {
-    // NOTE: needed for stupid shadcn cli
-    "compilerOptions": {
-        "baseUrl": ".",
-        "paths": {
-            "@/*": ["./src/*"]
-        }
-    },
     "files": [],
     "references": [
         {
