@@ -1,4 +1,5 @@
-import { routeTree } from "@/shared/lib/routeTree.gen";
+import { routeTree } from "@/routeTree.gen";
+import { ThemeProvider } from "@/shared/lib/theme";
 import { createRouter, RouterProvider } from "@tanstack/react-router";
 
 const router = createRouter({ routeTree });
@@ -12,7 +13,9 @@ declare module "@tanstack/react-router" {
 export function App() {
     return (
         <div className="w-svw h-svh">
-            <RouterProvider router={router} />
+            <ThemeProvider>
+                <RouterProvider router={router} />
+            </ThemeProvider>
         </div>
     );
 }

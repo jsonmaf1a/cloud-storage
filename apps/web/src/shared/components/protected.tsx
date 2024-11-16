@@ -1,8 +1,8 @@
-import { useNavigate } from "react-router-dom";
 import { Loader } from "./loader";
 import { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./error-fallback";
+import { useNavigate } from "@tanstack/react-router";
 
 interface Props {
     children: React.ReactNode;
@@ -10,17 +10,17 @@ interface Props {
 }
 
 export function Protected({ children, fallback = <Loader /> }: Props) {
-    const navigate = useNavigate();
+    const navigate = useNavigate({ from: location.pathname });
 
     // TODO:...
-    const isAuthenticated = false;
+    const isAuthenticated = true;
     const isLoading = false;
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
-            navigate("/auth", {
+            navigate({
+                to: "/auth/login",
                 replace: true,
-                state: { from: location.pathname },
             });
         }
     }, [isAuthenticated, isLoading, navigate]);

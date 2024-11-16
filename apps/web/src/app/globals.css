@@ -1,15 +1,24 @@
+@import url("https://fonts.googleapis.com/css2?family=Funnel+Sans:ital,wght@0,300..800;1,300..800&display=swap");
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
 :root {
-    font-family: Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+    font-family: "Funnel Sans", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+
     line-height: 1.5;
-    font-weight: 400;
 
     color-scheme: light dark;
     color: rgba(255, 255, 255, 0.87);
-    background-color: #242424;
 
     font-synthesis: none;
     text-rendering: optimizeLegibility;
@@ -19,7 +28,7 @@
 
 @layer base {
     :root {
-        --background: 0 0% 100%;
+        --background: #fff;
         --foreground: 0 0% 3.9%;
 
         --muted: 0 0% 96.1%;
@@ -40,7 +49,7 @@
         --secondary: 0 0% 96.1%;
         --secondary-foreground: 0 0% 9%;
 
-        --accent: 0 0% 96.1%;
+        --accent: #eab308;
         --accent-foreground: 0 0% 9%;
 
         --destructive: 0 84.2% 60.2%;
@@ -62,13 +71,13 @@
     }
 
     .dark {
-        --background: 0 0% 3.9%;
+        --background: #171717;
         --foreground: 0 0% 98%;
 
         --muted: 0 0% 14.9%;
         --muted-foreground: 0 0% 63.9%;
 
-        --accent: 0 0% 14.9%;
+        --accent: #eab308;
         --accent-foreground: 0 0% 98%;
 
         --popover: 0 0% 3.9%;

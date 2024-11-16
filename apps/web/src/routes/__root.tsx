@@ -1,6 +1,6 @@
 import * as React from "react";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
-import { Sidebar } from "@/widgets/sidebar";
+import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 
 export const Route = createRootRoute({
     component: RootComponent,
@@ -9,10 +9,8 @@ export const Route = createRootRoute({
 function RootComponent() {
     return (
         <React.Fragment>
-            <div className="flex flex-row">
-                <Sidebar />
-                <Outlet />
-            </div>
+            <Outlet />
+            <TanStackRouterDevtools />
         </React.Fragment>
     );
 }

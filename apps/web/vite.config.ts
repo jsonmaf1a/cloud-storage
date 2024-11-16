@@ -8,14 +8,7 @@ const host = process.env.TAURI_DEV_HOST;
 
 // https://vitejs.dev/config/
 export default defineConfig(async () => ({
-    plugins: [
-        react(),
-        tsConfigPaths(),
-        TanStackRouterVite({
-            routesDirectory: "./src/pages",
-            generatedRouteTree: "./src/shared/lib/routeTree.gen.ts",
-        }),
-    ],
+    plugins: [react(), tsConfigPaths(), TanStackRouterVite()],
     clearScreen: false,
     server: {
         port: 3000,

@@ -16,7 +16,7 @@ export const theme = {
             border: "hsl(var(--border))",
             input: "hsl(var(--input))",
             ring: "hsl(var(--ring))",
-            background: "hsl(var(--background))",
+            background: "var(--background)",
             foreground: "hsl(var(--foreground))",
             primary: {
                 DEFAULT: "hsl(var(--primary))",
@@ -46,6 +46,10 @@ export const theme = {
                 DEFAULT: "hsl(var(--card))",
                 foreground: "hsl(var(--card-foreground))",
             },
+            ltgray: {
+                DEFAULT: "#363636",
+                foreground: "#7B7B7B",
+            },
         },
         borderRadius: {
             lg: "var(--radius)",
@@ -55,19 +59,11 @@ export const theme = {
         fontFamily: {
             sans: ["var(--font-sans)", ...fontFamily.sans],
         },
-        keyframes: {
-            "accordion-down": {
-                from: { height: "0" },
-                to: { height: "var(--radix-accordion-content-height)" },
-            },
-            "accordion-up": {
-                from: { height: "var(--radix-accordion-content-height)" },
-                to: { height: "0" },
-            },
-        },
         animation: {
-            "accordion-down": "accordion-down 0.2s ease-out",
-            "accordion-up": "accordion-up 0.2s ease-out",
+            loader: "spin 1.5s ease infinite",
+        },
+        dropShadow: {
+            xl: "0 0px 20px var(--accent)",
         },
     },
 };
