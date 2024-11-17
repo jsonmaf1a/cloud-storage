@@ -1,31 +1,30 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import path from "node:path";
-import tsConfigPaths from "vite-tsconfig-paths";
 import { TanStackRouterVite } from "@tanstack/router-plugin/vite";
-
-const host = process.env.TAURI_DEV_HOST;
+import react from "@vitejs/plugin-react";
+import { defineConfig, loadEnv } from "vite";
+import tsConfigPaths from "vite-tsconfig-paths";
 
 // https://vitejs.dev/config/
-export default defineConfig(async () => ({
-    plugins: [react(), tsConfigPaths(), TanStackRouterVite()],
-    clearScreen: false,
-    server: {
-        port: 3000,
-        strictPort: true,
+export default defineConfig(async ({ mode }) => {
+    const env = loadEnv(mode, process.cwd(), "");
 
-        host: host || false,
-        hmr: host
-            ? {
-                  protocol: "ws",
-                  host,
-                  port: 3001,
-              }
-            : undefined,
-    },
-    resolve: {
-        alias: {
-            "@": path.resolve(__dirname, "./src"),
+    return {
+        plugins: [react(), tsConfigPaths(), TanStackRouterVite()],
+        clearScreen: false,
+        server: {
+            proxy: {
+                "/api": {
+                    target: env.API_URL,
+                    changeOrigin: true,
+                },
+            },
+            port: Number.parseInt(env.APP_PORT),
+            strictPort: true,
         },
-    },
-}));
+        resolve: {
+            alias: {
+                "@": path.resolve(__dirname, "./src"),
+            },
+        },
+    };
+});

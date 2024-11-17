@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const StatusModel = z
+export const StatusModelSchema = z
     .object({
         id: z.number(),
 
@@ -9,4 +9,8 @@ export const StatusModel = z
     })
     .passthrough();
 
-export const StatusDto = z.object({ id: z.number() }).passthrough();
+export type StatusModel = z.infer<typeof StatusModelSchema>;
+
+export const StatusDtoSchema = z.object({ id: z.number() }).passthrough();
+
+export type StatusDto = z.infer<typeof StatusDtoSchema>;

@@ -1,7 +1,7 @@
 import { z } from "zod";
-import { StatusDto, StatusModel } from "./status.schema";
+import { StatusDtoSchema, StatusModelSchema } from "./status.schema";
 
-export const CreateUserDto = z
+export const CreateUserDtoSchema = z
     .object({
         /** @example example@mail.com */
         email: z.string().nullable(),
@@ -13,11 +13,13 @@ export const CreateUserDto = z
         /** @example Doe */
         lastName: z.string().nullable(),
         avatarUrl: z.string().optional(),
-        status: StatusModel.optional(),
+        status: StatusModelSchema.optional(),
     })
     .passthrough();
 
-export const User = z
+export type CreateUserDto = z.infer<typeof CreateUserDtoSchema>;
+
+export const UserSchema = z
     .object({
         id: z.number(),
         /** @example example@mail.com */
@@ -30,7 +32,7 @@ export const User = z
         firstName: z.string().nullable(),
         /** @example Doe */
         lastName: z.string().nullable(),
-        avatarUrl: z.string().optional(),
+        avatarUrl: z.string().nullable().optional(),
         status: z
             .object({
                 id: z.number(),
@@ -46,7 +48,9 @@ export const User = z
     })
     .passthrough();
 
-export const UpdateUserDto = z
+export type User = z.infer<typeof UserSchema>;
+
+export const UpdateUserDtoSchema = z
     .object({
         /** @example test1@example.com */
         email: z.string().nullable(),
@@ -58,7 +62,9 @@ export const UpdateUserDto = z
         /** @example Doe */
         lastName: z.string().nullable(),
         avatarUrl: z.string(),
-        status: StatusDto,
+        status: StatusDtoSchema,
     })
     .partial()
     .passthrough();
+
+export type UpdateUserDto = z.infer<typeof UpdateUserDtoSchema>;

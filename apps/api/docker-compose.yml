@@ -11,13 +11,13 @@ services:
     ports:
       - 5432:5432
 
-  maildev:
-    build:
-      context: .
-      dockerfile: maildev.Dockerfile
-    expose:
-      - 1080
-      - 1025
+  # maildev:
+  #   build:
+  #     context: .
+  #     dockerfile: maildev.Dockerfile
+  #   expose:
+  #     - 1080
+  #     - 1025
 
   # redis:
   #   image: redis:7-alpine

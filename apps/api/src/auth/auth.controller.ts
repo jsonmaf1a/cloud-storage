@@ -15,12 +15,7 @@ import {
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
-import {
-    TsRest,
-    TsRestException,
-    TsRestHandler,
-    tsRestHandler,
-} from "@ts-rest/nest";
+import { TsRestException, TsRestHandler, tsRestHandler } from "@ts-rest/nest";
 import { AuthService } from "./auth.service";
 import { AuthConfirmEmailDto } from "./dto/auth-confirm-email.dto";
 import { AuthForgotPasswordDto } from "./dto/auth-forgot-password";
@@ -31,7 +26,11 @@ import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { RefreshResponseDto } from "./dto/refresh-response.dto";
 import { JwtRefreshRequest, JwtRequest } from "@/common/types/request";
-import { AuthContract } from "@cloud/shared";
+import {
+    AuthContract,
+    AuthLoginResponseDtoSchema,
+    AuthRefreshResponseDtoSchema,
+} from "@cloud/shared";
 
 const c = AuthContract;
 
@@ -48,14 +47,16 @@ export class AuthController {
         type: LoginResponseDto,
     })
     @HttpCode(HttpStatus.OK)
-    @TsRest(c.emailLogin)
+    @TsRestHandler(c.emailLogin)
     async login(@Body() loginDto: AuthLoginDto) {
-        return tsRestHandler(c.emailRegister, async () => {
+        return tsRestHandler(c.emailLogin, async () => {
             const data = await this.service.validateLogin(loginDto);
+
+            const validatedData = AuthLoginResponseDtoSchema.parse(data);
 
             return {
                 status: HttpStatus.OK,
-                body: data,
+                body: validatedData,
             };
         });
     }
@@ -188,9 +189,11 @@ export class AuthController {
                 hash: request.user.hash,
             });
 
+            const validatedData = AuthRefreshResponseDtoSchema.parse(data);
+
             return {
                 status: HttpStatus.OK,
-                body: data,
+                body: validatedData,
             };
         });
     }

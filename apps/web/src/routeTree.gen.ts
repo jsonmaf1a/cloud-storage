@@ -17,7 +17,9 @@ import { Route as ProtectedLayoutImport } from './routes/_protected/_layout'
 
 // Create Virtual Routes
 
+const AuthRegisterLazyImport = createFileRoute('/auth/register')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
+const AuthConfirmEmailLazyImport = createFileRoute('/auth/confirm-email')()
 const ProtectedLayoutIndexLazyImport = createFileRoute('/_protected/_layout/')()
 const ProtectedLayoutTrashLazyImport = createFileRoute(
   '/_protected/_layout/trash',
@@ -34,11 +36,25 @@ const ProtectedLayoutFavoritesLazyImport = createFileRoute(
 
 // Create/Update Routes
 
+const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
+  id: '/auth/register',
+  path: '/auth/register',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() => import('./routes/auth/register.lazy').then((d) => d.Route))
+
 const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   id: '/auth/login',
   path: '/auth/login',
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
+
+const AuthConfirmEmailLazyRoute = AuthConfirmEmailLazyImport.update({
+  id: '/auth/confirm-email',
+  path: '/auth/confirm-email',
+  getParentRoute: () => rootRoute,
+} as any).lazy(() =>
+  import('./routes/auth/confirm-email.lazy').then((d) => d.Route),
+)
 
 const ProtectedLayoutRoute = ProtectedLayoutImport.update({
   id: '/_protected/_layout',
@@ -98,11 +114,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ProtectedLayoutImport
       parentRoute: typeof rootRoute
     }
+    '/auth/confirm-email': {
+      id: '/auth/confirm-email'
+      path: '/auth/confirm-email'
+      fullPath: '/auth/confirm-email'
+      preLoaderRoute: typeof AuthConfirmEmailLazyImport
+      parentRoute: typeof rootRoute
+    }
     '/auth/login': {
       id: '/auth/login'
       path: '/auth/login'
       fullPath: '/auth/login'
       preLoaderRoute: typeof AuthLoginLazyImport
+      parentRoute: typeof rootRoute
+    }
+    '/auth/register': {
+      id: '/auth/register'
+      path: '/auth/register'
+      fullPath: '/auth/register'
+      preLoaderRoute: typeof AuthRegisterLazyImport
       parentRoute: typeof rootRoute
     }
     '/_protected/_layout/favorites': {
@@ -167,7 +197,9 @@ const ProtectedLayoutRouteWithChildren = ProtectedLayoutRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '': typeof ProtectedLayoutRouteWithChildren
+  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
+  '/auth/register': typeof AuthRegisterLazyRoute
   '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
   '/files': typeof ProtectedLayoutFilesLazyRoute
   '/settings': typeof ProtectedLayoutSettingsLazyRoute
@@ -176,7 +208,9 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
+  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
+  '/auth/register': typeof AuthRegisterLazyRoute
   '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
   '/files': typeof ProtectedLayoutFilesLazyRoute
   '/settings': typeof ProtectedLayoutSettingsLazyRoute
@@ -187,7 +221,9 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_protected/_layout': typeof ProtectedLayoutRouteWithChildren
+  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
+  '/auth/register': typeof AuthRegisterLazyRoute
   '/_protected/_layout/favorites': typeof ProtectedLayoutFavoritesLazyRoute
   '/_protected/_layout/files': typeof ProtectedLayoutFilesLazyRoute
   '/_protected/_layout/settings': typeof ProtectedLayoutSettingsLazyRoute
@@ -199,18 +235,30 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | ''
+    | '/auth/confirm-email'
     | '/auth/login'
+    | '/auth/register'
     | '/favorites'
     | '/files'
     | '/settings'
     | '/trash'
     | '/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/auth/login' | '/favorites' | '/files' | '/settings' | '/trash' | '/'
+  to:
+    | '/auth/confirm-email'
+    | '/auth/login'
+    | '/auth/register'
+    | '/favorites'
+    | '/files'
+    | '/settings'
+    | '/trash'
+    | '/'
   id:
     | '__root__'
     | '/_protected/_layout'
+    | '/auth/confirm-email'
     | '/auth/login'
+    | '/auth/register'
     | '/_protected/_layout/favorites'
     | '/_protected/_layout/files'
     | '/_protected/_layout/settings'
@@ -221,12 +269,16 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   ProtectedLayoutRoute: typeof ProtectedLayoutRouteWithChildren
+  AuthConfirmEmailLazyRoute: typeof AuthConfirmEmailLazyRoute
   AuthLoginLazyRoute: typeof AuthLoginLazyRoute
+  AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   ProtectedLayoutRoute: ProtectedLayoutRouteWithChildren,
+  AuthConfirmEmailLazyRoute: AuthConfirmEmailLazyRoute,
   AuthLoginLazyRoute: AuthLoginLazyRoute,
+  AuthRegisterLazyRoute: AuthRegisterLazyRoute,
 }
 
 export const routeTree = rootRoute
@@ -240,7 +292,9 @@ export const routeTree = rootRoute
       "filePath": "__root.tsx",
       "children": [
         "/_protected/_layout",
-        "/auth/login"
+        "/auth/confirm-email",
+        "/auth/login",
+        "/auth/register"
       ]
     },
     "/_protected/_layout": {
@@ -253,8 +307,14 @@ export const routeTree = rootRoute
         "/_protected/_layout/"
       ]
     },
+    "/auth/confirm-email": {
+      "filePath": "auth/confirm-email.lazy.tsx"
+    },
     "/auth/login": {
       "filePath": "auth/login.lazy.tsx"
+    },
+    "/auth/register": {
+      "filePath": "auth/register.lazy.tsx"
     },
     "/_protected/_layout/favorites": {
       "filePath": "_protected/_layout/favorites.lazy.tsx",

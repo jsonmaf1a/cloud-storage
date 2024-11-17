@@ -1,16 +1,16 @@
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
 import {
-    AuthConfirmEmailDto,
-    AuthForgotPasswordDto,
-    AuthLoginDto,
-    AuthRegisterDto,
-    AuthResetPasswordDto,
-    AuthUpdateDto,
-    AuthLoginResponseDto,
-    AuthRefreshResponseDto,
+    AuthConfirmEmailDtoSchema,
+    AuthForgotPasswordDtoSchema,
+    AuthLoginDtoSchema,
+    AuthRegisterDtoSchema,
+    AuthResetPasswordDtoSchema,
+    AuthUpdateDtoSchema,
+    AuthLoginResponseDtoSchema,
+    AuthRefreshResponseDtoSchema,
 } from "../schemas/auth.schema";
-import { User } from "../schemas/user.schema";
+import { UserSchema } from "../schemas/user.schema";
 import { HttpStatus } from "../constants/http";
 
 const c = initContract();
@@ -25,7 +25,7 @@ export const AuthContract = c.router(
                 // [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
                 // [HttpStatus.NOT_FOUND]: z.string(),
             },
-            body: AuthConfirmEmailDto,
+            body: AuthConfirmEmailDtoSchema,
             summary: "Confirm new email",
         },
         confirmEmail: {
@@ -36,16 +36,16 @@ export const AuthContract = c.router(
                 // [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
                 // [HttpStatus.NOT_FOUND]: z.string(),
             },
-            body: AuthConfirmEmailDto,
+            body: AuthConfirmEmailDtoSchema,
             summary: "Confirm email",
         },
         emailLogin: {
             method: "POST",
             path: "/email/login",
             responses: {
-                [HttpStatus.OK]: AuthLoginResponseDto,
+                [HttpStatus.OK]: AuthLoginResponseDtoSchema,
             },
-            body: AuthLoginDto,
+            body: AuthLoginDtoSchema,
             summary: "Login with email",
         },
         emailRegister: {
@@ -54,7 +54,7 @@ export const AuthContract = c.router(
             responses: {
                 [HttpStatus.CREATED]: z.void(),
             },
-            body: AuthRegisterDto,
+            body: AuthRegisterDtoSchema,
             summary: "Register with email",
         },
         resetPassword: {
@@ -63,7 +63,7 @@ export const AuthContract = c.router(
             responses: {
                 [HttpStatus.NO_CONTENT]: z.void(),
             },
-            body: AuthResetPasswordDto,
+            body: AuthResetPasswordDtoSchema,
             summary: "Reset password",
         },
         forgotPassword: {
@@ -72,7 +72,7 @@ export const AuthContract = c.router(
             responses: {
                 [HttpStatus.NO_CONTENT]: z.void(),
             },
-            body: AuthForgotPasswordDto,
+            body: AuthForgotPasswordDtoSchema,
             summary: "Forgot password",
         },
         logout: {
@@ -88,7 +88,7 @@ export const AuthContract = c.router(
             method: "GET",
             path: "/me",
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
                 // [HttpStatus.NOT_FOUND]: z.object({
                 //     code: z.string(),
                 //     message: z.string(),
@@ -98,9 +98,9 @@ export const AuthContract = c.router(
         updateMe: {
             method: "PATCH",
             path: "/me",
-            body: AuthUpdateDto,
+            body: AuthUpdateDtoSchema,
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
                 // [HttpStatus.NOT_FOUND]: z.object({
                 //     code: z.string(),
                 //     message: z.string(),
@@ -119,7 +119,7 @@ export const AuthContract = c.router(
             path: "/refresh",
             body: z.void(),
             responses: {
-                [HttpStatus.OK]: AuthRefreshResponseDto,
+                [HttpStatus.OK]: AuthRefreshResponseDtoSchema,
             },
         },
     },

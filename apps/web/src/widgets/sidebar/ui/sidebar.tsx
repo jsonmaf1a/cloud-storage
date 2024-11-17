@@ -4,7 +4,6 @@ import { useLocation } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
 import { NAVIGATION_ITEMS } from "../model/navigation";
 import { NavigationItem } from "./navigation-item";
-import image from "/image.svg";
 
 export const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1400);
@@ -16,10 +15,9 @@ export const Sidebar = () => {
     const handleToggleSidebar = useCallback(() => {
         setIsCollapsed((prev) => !prev);
     }, []);
-    // #FFF37A
 
     return (
-        <aside className="flex flex-col h-screen bg-background text-white w-2/12">
+        <aside className="flex flex-col h-screen bg-background text-white min-w-72 w-2/12">
             <Logo />
             <ul className="flex flex-col justify-between py-4 gap-4">
                 {NAVIGATION_ITEMS.map((item) => (

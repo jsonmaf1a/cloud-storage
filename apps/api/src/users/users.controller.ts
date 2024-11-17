@@ -102,7 +102,7 @@ export class UsersController {
         type: User,
     })
     @SerializeOptions({
-        groups: ["admin"],
+        groups: [ExposeGroup.Admin],
     })
     @Patch(":id")
     @HttpCode(HttpStatus.OK)

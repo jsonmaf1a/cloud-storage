@@ -1,4 +1,3 @@
-import * as crypto from "node:crypto";
 import { GeneralConfig } from "@/config/general.config";
 import { MailService } from "@/mail/mail.service";
 import { Session } from "@/session/domain/session";
@@ -7,6 +6,12 @@ import { SocialData } from "@/social/social.interface";
 import { Status } from "@/statuses/statuses";
 import { User } from "@/users/domain/user";
 import { UsersService } from "@/users/users.service";
+import {
+    AuthLoginResponseDto,
+    AuthLoginResponseDtoSchema,
+    Nullable,
+    UserSchema,
+} from "@cloud/shared";
 import {
     HttpStatus,
     Injectable,
@@ -18,15 +23,18 @@ import { randomStringGenerator } from "@nestjs/common/utils/random-string-genera
 import { ConfigService } from "@nestjs/config";
 import { JwtService } from "@nestjs/jwt";
 import * as bcrypt from "bcrypt";
+import { instanceToPlain } from "class-transformer";
 import ms from "ms";
+import * as crypto from "node:crypto";
 import { AuthProviders } from "./auth-providers";
-import { AuthUpdateDto } from "./dto/auth-update.dto";
-import { LoginResponseDto } from "./dto/login-response.dto";
-import { JwtPayload } from "./types/jwt-payload";
-import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterDto } from "./dto/auth-register.dto";
-import { Nullable } from "@cloud/shared";
+import { AuthUpdateDto } from "./dto/auth-update.dto";
+import { JwtPayload } from "./types/jwt-payload";
+import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
+import { LoginResponseDto } from "./dto/login-response.dto";
+import { ExposeGroup } from "@/common/enums/expose-group";
+import { z } from "zod";
 
 @Injectable()
 export class AuthService {
@@ -38,7 +46,7 @@ export class AuthService {
         private configService: ConfigService<GeneralConfig>,
     ) {}
 
-    async validateLogin(loginDto: AuthLoginDto): Promise<LoginResponseDto> {
+    async validateLogin(loginDto: AuthLoginDto): Promise<AuthLoginResponseDto> {
         const user = await this.usersService.findByEmail(loginDto.email);
 
         if (!user) {
@@ -98,18 +106,25 @@ export class AuthService {
             hash,
         });
 
+        const plainUser = instanceToPlain(user, {
+            groups: [ExposeGroup.Self],
+            excludeExtraneousValues: false,
+        }) as User;
+
+        const validatedUser = UserSchema.parse(plainUser);
+
         return {
             refreshToken,
             token,
             tokenExpires,
-            user,
+            user: validatedUser,
         };
     }
 
     async validateSocialLogin(
         authProvider: string,
         socialData: SocialData,
-    ): Promise<LoginResponseDto> {
+    ): Promise<AuthLoginResponseDto> {
         let user: Nullable<User> = null;
         const socialEmail = socialData.email?.toLowerCase();
         let userByEmail: Nullable<User> = null;
@@ -178,11 +193,18 @@ export class AuthService {
             hash,
         });
 
+        const plainUser = instanceToPlain(user, {
+            groups: [ExposeGroup.Self],
+            excludeExtraneousValues: false,
+        }) as User;
+
+        const validatedUser = UserSchema.parse(plainUser);
+
         return {
             refreshToken,
             token: jwtToken,
             tokenExpires,
-            user,
+            user: validatedUser,
         };
     }
 

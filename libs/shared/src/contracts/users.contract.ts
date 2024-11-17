@@ -1,8 +1,8 @@
 import { HttpStatus } from "../constants/http";
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { CreateUserDto, User } from "../schemas/user.schema";
-import { UpdateUserDto } from "../schemas/user.schema";
+import { CreateUserDtoSchema, UserSchema } from "../schemas/user.schema";
+import { UpdateUserDtoSchema } from "../schemas/user.schema";
 
 const c = initContract();
 
@@ -11,9 +11,9 @@ export const UsersContract = c.router(
         create: {
             method: "POST",
             path: "/",
-            body: CreateUserDto,
+            body: CreateUserDtoSchema,
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
             },
         },
         findAll: {
@@ -25,7 +25,7 @@ export const UsersContract = c.router(
                 sort: z.string().optional(),
             }),
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
             },
         },
         get: {
@@ -35,7 +35,7 @@ export const UsersContract = c.router(
                 id: z.coerce.number(),
             }),
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
             },
         },
         patch: {
@@ -44,9 +44,9 @@ export const UsersContract = c.router(
             pathParams: z.object({
                 id: z.coerce.number(),
             }),
-            body: UpdateUserDto,
+            body: UpdateUserDtoSchema,
             responses: {
-                [HttpStatus.OK]: User,
+                [HttpStatus.OK]: UserSchema,
             },
         },
         delete: {

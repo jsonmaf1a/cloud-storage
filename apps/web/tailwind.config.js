@@ -35,8 +35,8 @@ export const theme = {
                 foreground: "hsl(var(--muted-foreground))",
             },
             accent: {
-                DEFAULT: "hsl(var(--accent))",
-                foreground: "hsl(var(--accent-foreground))",
+                DEFAULT: "var(--accent)",
+                foreground: "var(--accent-foreground)",
             },
             popover: {
                 DEFAULT: "hsl(var(--popover))",
@@ -50,6 +50,9 @@ export const theme = {
                 DEFAULT: "#363636",
                 foreground: "#7B7B7B",
             },
+        },
+        backgroundImage: {
+            "auth-pattern": "url(/auth-pattern.png)",
         },
         borderRadius: {
             lg: "var(--radius)",
