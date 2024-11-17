@@ -49,8 +49,15 @@ export class AuthController {
     })
     @HttpCode(HttpStatus.OK)
     @TsRest(c.emailLogin)
-    async login(@Body() loginDto: AuthLoginDto): Promise<LoginResponseDto> {
-        return this.service.validateLogin(loginDto);
+    async login(@Body() loginDto: AuthLoginDto) {
+        return tsRestHandler(c.emailRegister, async () => {
+            const data = await this.service.validateLogin(loginDto);
+
+            return {
+                status: HttpStatus.OK,
+                body: data,
+            };
+        });
     }
 
     @Post("email/register")
