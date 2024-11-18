@@ -1,8 +1,7 @@
 import { Input } from "@/shared/components/ui/input";
-import { Link } from "@tanstack/react-router";
 import { LoginPrompt } from "./login-prompt";
-import { useRegisterMutation } from "../hooks/useRegisterMutation";
-import { useRegisterForm } from "../hooks/useRegisterForm";
+import { useRegisterMutation } from "../../hooks/useRegisterMutation";
+import { useRegisterForm } from "../../hooks/useRegisterForm";
 
 export function RegisterForm() {
     const { register, handleSubmit, errors } = useRegisterForm();
@@ -17,12 +16,12 @@ export function RegisterForm() {
                 firstName: data.firstName,
             });
             if (!result.success) {
-                console.error("Login failed:", result.error);
+                console.error("Register failed:", result.error);
                 return;
             }
-            console.log("Login successful:", result.data);
+            console.log("Register successful:", result.data);
         } catch (error) {
-            console.error("Unexpected error during login:", error);
+            console.error("Unexpected error during register:", error);
         }
     });
 

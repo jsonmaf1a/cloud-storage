@@ -1,13 +1,17 @@
 import { Input } from "@/shared/components/ui/input";
-import { Link } from "@tanstack/react-router";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { RememberMe } from "./remember-me";
-import { useLoginMutation } from "../hooks/useLoginMutation";
-import { useLoginForm } from "../hooks/useLoginForm";
 import { RegisterPropmt } from "./register-prompt";
+import { useLoginForm } from "../../hooks/useLoginForm";
+import { useLoginMutation } from "../../hooks/useLoginMutation";
+import { useAuth } from "../../hooks/useAuth";
 
 export function LoginForm() {
+    const navigate = useNavigate({ from: location.pathname });
     const { register, handleSubmit, errors } = useLoginForm();
     const { handleLogin, isPending } = useLoginMutation();
+
+    const { login, session } = useAuth();
 
     const onSubmit = handleSubmit(async (data) => {
         try {
@@ -15,11 +19,23 @@ export function LoginForm() {
                 email: data.email,
                 password: data.password,
             });
+
             if (!result.success) {
                 console.error("Login failed:", result.error);
                 return;
             }
+
             console.log("Login successful:", result.data);
+
+            if (result.data) {
+                login({
+                    user: result.data.body.user,
+                    token: result.data.body.token,
+                    tokenExpires: result.data.body.tokenExpires,
+                });
+
+                navigate({ to: "/" });
+            }
         } catch (error) {
             console.error("Unexpected error during login:", error);
         }

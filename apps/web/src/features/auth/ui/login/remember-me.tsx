@@ -1,5 +1,5 @@
 import { UseFormRegister } from "react-hook-form";
-import { LoginFormData } from "../model/types";
+import { LoginFormData } from "../../model/types";
 
 interface RememberMeProps {
     register: UseFormRegister<LoginFormData>;
