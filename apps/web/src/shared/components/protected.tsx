@@ -3,6 +3,7 @@ import { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./error-fallback";
 import { useNavigate } from "@tanstack/react-router";
+import { useAuthStatus } from "@/features/auth";
 
 interface Props {
     children: React.ReactNode;
@@ -12,9 +13,8 @@ interface Props {
 export function Protected({ children, fallback = <Loader /> }: Props) {
     const navigate = useNavigate({ from: location.pathname });
 
-    // TODO:...
-    const isAuthenticated = true;
-    const isLoading = false;
+    const { isAuthenticated } = useAuthStatus();
+    const { isLoading } = useAuthStatus();
 
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {

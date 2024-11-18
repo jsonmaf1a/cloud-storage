@@ -1,10 +1,9 @@
-import * as React from 'react'
-import { createLazyFileRoute } from '@tanstack/react-router'
+import { createLazyFileRoute } from "@tanstack/react-router";
 
-export const Route = createLazyFileRoute('/auth/confirm-email')({
-  component: RouteComponent,
-})
+export const Route = createLazyFileRoute("/auth/confirm-email")({
+    component: RouteComponent,
+});
 
 function RouteComponent() {
-  return 'Hello /auth/confirm-email!'
+    return "Hello /auth/confirm-email!";
 }

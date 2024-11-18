@@ -1,1 +1,1 @@
-export { tsr } from "./tsr";
+export { tsr, queryClient } from "./tsr";
