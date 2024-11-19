@@ -1,29 +1,18 @@
 import { Input } from "@/shared/components/ui/input";
-import { LoginPrompt } from "./login-prompt";
-import { useRegisterMutation } from "../../hooks/useRegisterMutation";
+import { useCallback } from "react";
+import { useRegister } from "../../hooks/useRegister";
 import { useRegisterForm } from "../../hooks/useRegisterForm";
+import { LoginPrompt } from "./login-prompt";
 
 export function RegisterForm() {
     const { register, handleSubmit, errors } = useRegisterForm();
-    const { handleRegister, isPending } = useRegisterMutation();
 
-    const onSubmit = handleSubmit(async (data) => {
-        try {
-            const result = await handleRegister({
-                email: data.email,
-                password: data.password,
-                lastName: data.lastName,
-                firstName: data.firstName,
-            });
-            if (!result.success) {
-                console.error("Register failed:", result.error);
-                return;
-            }
-            console.log("Register successful:", result.data);
-        } catch (error) {
-            console.error("Unexpected error during register:", error);
-        }
-    });
+    const { handleRegisterSubmit, isPending } = useRegister();
+
+    const onSubmit = useCallback(
+        handleSubmit((data) => handleRegisterSubmit(data)),
+        [],
+    );
 
     return (
         <form className="flex flex-col gap-3 w-2/4" onSubmit={onSubmit}>

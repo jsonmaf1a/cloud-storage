@@ -13,6 +13,7 @@
     "dependencies": {
         "@cloud/shared": "workspace:*",
         "@tanstack/react-query": "5",
+        "@tanstack/react-query-devtools": "^5.60.6",
         "@tanstack/react-router": "^1.81.5",
         "@tauri-apps/api": "^2",
         "@tauri-apps/plugin-shell": "^2",
@@ -24,6 +25,7 @@
         "react-dom": "^18.3.1",
         "react-error-boundary": "^4.1.2",
         "react-hook-form": "^7.53.2",
+        "react-toastify": "^10.0.6",
         "tailwind-merge": "^2.5.4",
         "tailwindcss-animate": "^1.0.7",
         "zod": "^3.23.8",

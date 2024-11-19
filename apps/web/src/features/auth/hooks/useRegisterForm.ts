@@ -1,8 +1,8 @@
+import { AuthRegisterDto } from "@cloud/shared";
 import { useForm } from "react-hook-form";
-import { RegisterFormData } from "../model/types";
 
 export const useRegisterForm = () => {
-    const form = useForm<RegisterFormData>({
+    const form = useForm<AuthRegisterDto>({
         defaultValues: {
             email: "",
             password: "",

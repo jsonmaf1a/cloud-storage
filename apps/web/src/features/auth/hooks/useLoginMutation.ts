@@ -24,7 +24,7 @@ export const useLoginMutation = () => {
             return { success: true, data: result };
         } catch (error) {
             console.error("Login error:", error);
-            return { success: false, error };
+            return { success: false, error: error };
         }
     };
 

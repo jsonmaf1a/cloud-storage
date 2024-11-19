@@ -33,18 +33,3 @@ export const useAuthActions = () => {
         [actions],
     );
 };
-
-export const useAuth = () => {
-    const status = useAuthStatus();
-    const session = useAuthSession();
-    const actions = useAuthActions();
-
-    return useMemo(
-        () => ({
-            ...status,
-            session,
-            ...actions,
-        }),
-        [status, session, actions],
-    );
-};

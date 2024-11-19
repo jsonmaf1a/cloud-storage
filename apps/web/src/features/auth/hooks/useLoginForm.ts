@@ -1,8 +1,8 @@
 import { useForm } from "react-hook-form";
-import { LoginFormData } from "../model/types";
+import { AuthLoginDto } from "@cloud/shared";
 
 export const useLoginForm = () => {
-    const form = useForm<LoginFormData>({
+    const form = useForm<AuthLoginDto>({
         defaultValues: {
             email: "",
             password: "",

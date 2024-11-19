@@ -1,45 +1,21 @@
 import { Input } from "@/shared/components/ui/input";
-import { Link, useNavigate } from "@tanstack/react-router";
-import { RememberMe } from "./remember-me";
-import { RegisterPropmt } from "./register-prompt";
+import { Link } from "@tanstack/react-router";
+import { useCallback } from "react";
+import { useLogin } from "../../hooks/useLogin";
 import { useLoginForm } from "../../hooks/useLoginForm";
-import { useLoginMutation } from "../../hooks/useLoginMutation";
-import { useAuth } from "../../hooks/useAuth";
+import { RegisterPropmt } from "./register-prompt";
+import { RememberMe } from "./remember-me";
+import { ToastContainer } from "react-toastify";
 
 export function LoginForm() {
-    const navigate = useNavigate({ from: location.pathname });
     const { register, handleSubmit, errors } = useLoginForm();
-    const { handleLogin, isPending } = useLoginMutation();
 
-    const { login, session } = useAuth();
+    const { handleLoginSubmit, isPending } = useLogin();
 
-    const onSubmit = handleSubmit(async (data) => {
-        try {
-            const result = await handleLogin({
-                email: data.email,
-                password: data.password,
-            });
-
-            if (!result.success) {
-                console.error("Login failed:", result.error);
-                return;
-            }
-
-            console.log("Login successful:", result.data);
-
-            if (result.data) {
-                login({
-                    user: result.data.body.user,
-                    token: result.data.body.token,
-                    tokenExpires: result.data.body.tokenExpires,
-                });
-
-                navigate({ to: "/" });
-            }
-        } catch (error) {
-            console.error("Unexpected error during login:", error);
-        }
-    });
+    const onSubmit = useCallback(
+        handleSubmit((data) => handleLoginSubmit(data)),
+        [],
+    );
 
     return (
         <form className="flex flex-col gap-3 w-2/4" onSubmit={onSubmit}>
