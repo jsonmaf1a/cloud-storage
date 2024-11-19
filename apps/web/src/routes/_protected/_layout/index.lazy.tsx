@@ -1,5 +1,5 @@
-import { useAuthActions } from "@/features/auth-store";
 import { Button } from "@/shared/components/ui/button";
+import { useAuthActions } from "@/shared/lib/auth-store";
 import { createLazyFileRoute } from "@tanstack/react-router";
 
 export const Route = createLazyFileRoute("/_protected/_layout/")({
