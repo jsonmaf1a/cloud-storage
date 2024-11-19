@@ -1,4 +1,7 @@
 {
+    "files": {
+        "ignore": ["**/*/*.gen.ts"]
+    },
     "organizeImports": {
         "enabled": true
     },
@@ -30,7 +33,7 @@
         "attributePosition": "auto",
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 80,
+        "lineWidth": 120,
         "lineEnding": "lf"
     },
     "javascript": {

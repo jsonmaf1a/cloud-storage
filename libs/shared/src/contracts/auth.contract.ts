@@ -22,8 +22,9 @@ export const AuthContract = c.router(
             path: "/email/confirm/new",
             responses: {
                 [HttpStatus.NO_CONTENT]: z.void(),
-                // [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
-                // [HttpStatus.NOT_FOUND]: z.string(),
+                [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
+                [HttpStatus.NOT_FOUND]: z.string(),
+                [HttpStatus.INTERNAL_SERVER_ERROR]: z.string(),
             },
             body: AuthConfirmEmailDtoSchema,
             summary: "Confirm new email",
@@ -52,7 +53,7 @@ export const AuthContract = c.router(
             method: "POST",
             path: "/email/register",
             responses: {
-                [HttpStatus.CREATED]: z.void(),
+                [HttpStatus.CREATED]: AuthLoginResponseDtoSchema,
             },
             body: AuthRegisterDtoSchema,
             summary: "Register with email",
