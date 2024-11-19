@@ -9,7 +9,6 @@ interface Props {
 }
 
 export function NavigationItem({ item, isActive, isSidebarCollapsed }: Props) {
-    console.log(item.path, isActive);
     return (
         <li className="relative">
             <div

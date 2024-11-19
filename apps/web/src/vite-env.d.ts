@@ -2,11 +2,12 @@
 
 interface ImportMetaEnv {
     readonly VITE_APP_TITLE: string;
-    readonly TAURI_HOST: string;
-    // more env variables...
+    readonly APP_PORT: string;
+
+    readonly API_URL: string;
+    readonly API_PORT: string;
 }
 
-// biome-ignore lint/correctness/noUnusedVariables: <explanation>
 interface ImportMeta {
     readonly env: ImportMetaEnv;
 }

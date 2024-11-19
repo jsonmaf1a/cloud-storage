@@ -13,13 +13,13 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as AuthConfirmEmailImport } from './routes/auth/confirm-email'
 import { Route as ProtectedLayoutImport } from './routes/_protected/_layout'
 
 // Create Virtual Routes
 
 const AuthRegisterLazyImport = createFileRoute('/auth/register')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
-const AuthConfirmEmailLazyImport = createFileRoute('/auth/confirm-email')()
 const ProtectedLayoutIndexLazyImport = createFileRoute('/_protected/_layout/')()
 const ProtectedLayoutTrashLazyImport = createFileRoute(
   '/_protected/_layout/trash',
@@ -48,13 +48,11 @@ const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
 
-const AuthConfirmEmailLazyRoute = AuthConfirmEmailLazyImport.update({
+const AuthConfirmEmailRoute = AuthConfirmEmailImport.update({
   id: '/auth/confirm-email',
   path: '/auth/confirm-email',
   getParentRoute: () => rootRoute,
-} as any).lazy(() =>
-  import('./routes/auth/confirm-email.lazy').then((d) => d.Route),
-)
+} as any)
 
 const ProtectedLayoutRoute = ProtectedLayoutImport.update({
   id: '/_protected/_layout',
@@ -118,7 +116,7 @@ declare module '@tanstack/react-router' {
       id: '/auth/confirm-email'
       path: '/auth/confirm-email'
       fullPath: '/auth/confirm-email'
-      preLoaderRoute: typeof AuthConfirmEmailLazyImport
+      preLoaderRoute: typeof AuthConfirmEmailImport
       parentRoute: typeof rootRoute
     }
     '/auth/login': {
@@ -197,7 +195,7 @@ const ProtectedLayoutRouteWithChildren = ProtectedLayoutRoute._addFileChildren(
 
 export interface FileRoutesByFullPath {
   '': typeof ProtectedLayoutRouteWithChildren
-  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
+  '/auth/confirm-email': typeof AuthConfirmEmailRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
@@ -208,7 +206,7 @@ export interface FileRoutesByFullPath {
 }
 
 export interface FileRoutesByTo {
-  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
+  '/auth/confirm-email': typeof AuthConfirmEmailRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
@@ -221,7 +219,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRoute
   '/_protected/_layout': typeof ProtectedLayoutRouteWithChildren
-  '/auth/confirm-email': typeof AuthConfirmEmailLazyRoute
+  '/auth/confirm-email': typeof AuthConfirmEmailRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
   '/_protected/_layout/favorites': typeof ProtectedLayoutFavoritesLazyRoute
@@ -269,14 +267,14 @@ export interface FileRouteTypes {
 
 export interface RootRouteChildren {
   ProtectedLayoutRoute: typeof ProtectedLayoutRouteWithChildren
-  AuthConfirmEmailLazyRoute: typeof AuthConfirmEmailLazyRoute
+  AuthConfirmEmailRoute: typeof AuthConfirmEmailRoute
   AuthLoginLazyRoute: typeof AuthLoginLazyRoute
   AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
   ProtectedLayoutRoute: ProtectedLayoutRouteWithChildren,
-  AuthConfirmEmailLazyRoute: AuthConfirmEmailLazyRoute,
+  AuthConfirmEmailRoute: AuthConfirmEmailRoute,
   AuthLoginLazyRoute: AuthLoginLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
 }
@@ -308,7 +306,7 @@ export const routeTree = rootRoute
       ]
     },
     "/auth/confirm-email": {
-      "filePath": "auth/confirm-email.lazy.tsx"
+      "filePath": "auth/confirm-email.tsx"
     },
     "/auth/login": {
       "filePath": "auth/login.lazy.tsx"
