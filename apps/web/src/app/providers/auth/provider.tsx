@@ -1,12 +1,22 @@
-import { useAuthStore } from "@/features/auth/model/store";
+import { useAuthActions, useAuthStatus } from "@/features/auth";
+import { Loader } from "@/shared/components/loader";
 import { PropsWithChildren, useEffect } from "react";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
-    const { actions } = useAuthStore();
+    const { initialize } = useAuthActions();
+    const { isLoading, error } = useAuthStatus();
 
     useEffect(() => {
-        actions.initialize();
-    }, []);
+        initialize();
+    }, [initialize]);
 
-    return children;
+    if (isLoading) {
+        return <Loader />;
+    }
+
+    if (error) {
+        return <div>Error: {error}</div>;
+    }
+
+    return <>{children}</>;
 };

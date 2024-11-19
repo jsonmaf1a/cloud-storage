@@ -14,8 +14,10 @@ export interface AuthSessionSlice {
 export interface AuthStatusSlice {
     isLoading: boolean;
     isAuthenticated: boolean;
+    isInitialized: boolean;
     error: Nullable<string>;
     setStatus: (status: Partial<AuthStatus>) => void;
+    setInitialized: (state: boolean) => void;
 }
 
 export interface AuthActionsSlice {

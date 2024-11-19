@@ -1,51 +1,48 @@
 import { StateCreator } from "zustand";
-import {
-    AuthActionsSlice,
-    AuthSessionSlice,
-    AuthState,
-    AuthStatusSlice,
-    Session,
-} from "../types/store";
+import { AuthActionsSlice, AuthSessionSlice, AuthState, AuthStatusSlice, Session } from "../types/store";
 import { LocalStorageService } from "@/shared/lib/storage";
 import { AuthService } from "./service";
+import { JwtUtils } from "@/shared/lib/utils";
 
 const authService = new AuthService(new LocalStorageService());
 
-export const createAuthSessionSlice: StateCreator<
-    AuthState,
-    [],
-    [],
-    AuthSessionSlice
-> = (set) => ({
+export const createAuthSessionSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthSessionSlice> = (
+    set,
+) => ({
     session: null,
     setSession: (session) => set({ session }),
 });
 
-export const createAuthStatusSlice: StateCreator<
-    AuthState,
-    [],
-    [],
-    AuthStatusSlice
-> = (set) => ({
+export const createAuthStatusSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthStatusSlice> = (
+    set,
+) => ({
     isLoading: false,
     isAuthenticated: false,
+    isInitialized: false,
     error: null,
     setStatus: (status) =>
         set((state) => ({
             ...state,
             ...status,
         })),
+
+    setInitialized: (isInitialized) =>
+        set(() => ({
+            isInitialized,
+        })),
 });
 
-export const createAuthActionsSlice: StateCreator<
-    AuthState,
-    [],
-    [],
-    AuthActionsSlice
-> = (set, get) => ({
+export const createAuthActionsSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthActionsSlice> = (
+    set,
+    get,
+) => ({
     actions: {
         initialize: async () => {
-            const { setSession, setStatus } = get();
+            const { isInitialized, setSession, setStatus, setInitialized } = get();
+
+            if (isInitialized) {
+                return;
+            }
 
             try {
                 setStatus({ isLoading: true });
@@ -59,10 +56,16 @@ export const createAuthActionsSlice: StateCreator<
                         error: null,
                     });
                     setSession(null);
+                    setInitialized(true);
                     return;
                 }
 
-                const user = await authService.getUserFromToken(token);
+                const userId = JwtUtils.decodeJwtToken(token)?.id;
+
+                // TODO:(refactor): replace with axios
+                const user = await fetch(`/api/users/${userId}`, {
+                    headers: { Authorization: `Bearer ${token}` },
+                }).then((res) => res.json());
 
                 if (!user) {
                     setStatus({
@@ -70,6 +73,7 @@ export const createAuthActionsSlice: StateCreator<
                         error: "Failed to fetch user data",
                     });
                     setSession(null);
+                    setInitialized(true);
                     return;
                 }
 
@@ -87,11 +91,12 @@ export const createAuthActionsSlice: StateCreator<
             } catch (error) {
                 setStatus({
                     isAuthenticated: false,
-                    error: "Authentication initialization failed",
+                    error: typeof error === "string" ? error : "Auth store initialization error",
                 });
                 setSession(null);
             } finally {
                 setStatus({ isLoading: false });
+                setInitialized(true);
             }
         },
 

@@ -1,11 +1,7 @@
 import { create } from "zustand";
 import { AuthState } from "../types/store";
 import { devtools } from "zustand/middleware";
-import {
-    createAuthActionsSlice,
-    createAuthSessionSlice,
-    createAuthStatusSlice,
-} from "./slices";
+import { createAuthActionsSlice, createAuthSessionSlice, createAuthStatusSlice } from "./slices";
 
 export const useAuthStore = create<AuthState>()(
     devtools(
@@ -14,6 +10,6 @@ export const useAuthStore = create<AuthState>()(
             ...createAuthStatusSlice(...args),
             ...createAuthActionsSlice(...args),
         }),
-        { name: "AuthStore" },
+        { name: "auth" },
     ),
 );
