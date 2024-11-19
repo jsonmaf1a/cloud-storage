@@ -1,6 +1,5 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Sidebar } from "@/widgets/sidebar";
-import { Protected } from "@/shared/components/protected";
 import { useProtectRoute } from "@/shared/lib/hooks/use-protect-route";
 import { Loader } from "@/shared/components/loader";
 import { ErrorBoundary } from "react-error-boundary";

@@ -9,7 +9,7 @@
         "lint:ts": "turbo lint:ts"
     },
     "packageManager": "pnpm@9.12.3",
-    "author": "kkk-petrov",
+    "author": "jsonmaf1a",
     "license": "GPL-3.0-only",
     "devDependencies": {
         "@types/node": "^20.3.1",
