@@ -1,5 +1,5 @@
-import { useAuthActions, useAuthStatus } from "@/features/auth-store";
 import { Loader } from "@/shared/components/loader";
+import { useAuthActions, useAuthStatus } from "@/shared/lib/auth-store";
 import { PropsWithChildren, useEffect } from "react";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {

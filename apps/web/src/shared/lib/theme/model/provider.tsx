@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "./context";
 import { THEME_CONSTANTS } from "./constants";
-import { useMediaQuery } from "@/shared/hooks/use-media-query";
 import { Theme } from "@/shared/types/theme";
+import { useMediaQuery } from "../../hooks/use-media-query";
 
 export type ThemeProviderProps = {
     children: React.ReactNode;
@@ -62,7 +62,5 @@ export function ThemeProvider({
         [theme, setTheme],
     );
 
-    return (
-        <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>
-    );
+    return <ThemeContext.Provider value={value}>{children}</ThemeContext.Provider>;
 }
