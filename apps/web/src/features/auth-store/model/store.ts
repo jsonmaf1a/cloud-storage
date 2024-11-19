@@ -1,5 +1,5 @@
 import { create } from "zustand";
-import { AuthState } from "../types/store";
+import { AuthState } from "../model/types";
 import { devtools } from "zustand/middleware";
 import { createAuthActionsSlice, createAuthSessionSlice, createAuthStatusSlice } from "./slices";
 

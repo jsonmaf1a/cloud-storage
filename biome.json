@@ -33,7 +33,7 @@
         "attributePosition": "auto",
         "indentStyle": "space",
         "indentWidth": 4,
-        "lineWidth": 120,
+        "lineWidth": 110,
         "lineEnding": "lf"
     },
     "javascript": {

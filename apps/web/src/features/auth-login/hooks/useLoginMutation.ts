@@ -1,6 +1,6 @@
 import { tsr } from "@/shared/api";
 import { AuthLoginDto } from "@cloud/shared";
-import { AUTH_QUERY_KEYS } from "../config/constants";
+import { LOGIN_QUERY_KEY } from "../config/constants";
 
 export const useLoginMutation = () => {
     const { mutateAsync, isPending } = tsr.auth.emailLogin.useMutation();
@@ -12,12 +12,9 @@ export const useLoginMutation = () => {
                 { body: credentials },
                 {
                     onSuccess: (data) => {
-                        tsrQueryClient.setQueryData(
-                            [AUTH_QUERY_KEYS.LOGIN_QUERY_KEY],
-                            {
-                                body: data,
-                            },
-                        );
+                        tsrQueryClient.setQueryData([LOGIN_QUERY_KEY], {
+                            body: data,
+                        });
                     },
                 },
             );

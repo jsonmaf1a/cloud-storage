@@ -1,4 +1,4 @@
-import { AuthState } from "../types/store";
+import { AuthState } from "../model/types";
 
 export const authSelectors = {
     session: (state: AuthState) => state.session,

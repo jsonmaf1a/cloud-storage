@@ -3,7 +3,7 @@ import { Suspense, useEffect } from "react";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "./error-fallback";
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthStatus } from "@/features/auth";
+import { useAuthStatus } from "@/features/auth-store";
 
 interface Props {
     children: React.ReactNode;

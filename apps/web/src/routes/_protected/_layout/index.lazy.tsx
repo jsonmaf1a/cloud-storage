@@ -1,4 +1,4 @@
-import { useAuthActions } from "@/features/auth";
+import { useAuthActions } from "@/features/auth-store";
 import { Button } from "@/shared/components/ui/button";
 import { createLazyFileRoute } from "@tanstack/react-router";
 

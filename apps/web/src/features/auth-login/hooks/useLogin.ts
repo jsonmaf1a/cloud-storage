@@ -1,9 +1,9 @@
 import { useNavigate } from "@tanstack/react-router";
-import { useAuthActions } from "./useAuth";
 import { useLoginMutation } from "./useLoginMutation";
 import { useCallback } from "react";
 import { AuthLoginDto } from "@cloud/shared";
 import { toast } from "react-toastify";
+import { useAuthActions } from "@/features/auth-store";
 
 export const useLogin = () => {
     const { login } = useAuthActions();

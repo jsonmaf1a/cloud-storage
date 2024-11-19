@@ -1,21 +1,27 @@
 import { StateCreator } from "zustand";
-import { AuthActionsSlice, AuthSessionSlice, AuthState, AuthStatusSlice, Session } from "../types/store";
+import { AuthActionsSlice, AuthSessionSlice, AuthState, AuthStatusSlice, Session } from "../model/types";
 import { LocalStorageService } from "@/shared/lib/storage";
 import { AuthService } from "./service";
 import { JwtUtils } from "@/shared/lib/utils";
 
 const authService = new AuthService(new LocalStorageService());
 
-export const createAuthSessionSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthSessionSlice> = (
-    set,
-) => ({
+export const createAuthSessionSlice: StateCreator<
+    AuthState,
+    [["zustand/devtools", never]],
+    [],
+    AuthSessionSlice
+> = (set) => ({
     session: null,
     setSession: (session) => set({ session }),
 });
 
-export const createAuthStatusSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthStatusSlice> = (
-    set,
-) => ({
+export const createAuthStatusSlice: StateCreator<
+    AuthState,
+    [["zustand/devtools", never]],
+    [],
+    AuthStatusSlice
+> = (set) => ({
     isLoading: false,
     isAuthenticated: false,
     isInitialized: false,
@@ -32,10 +38,12 @@ export const createAuthStatusSlice: StateCreator<AuthState, [["zustand/devtools"
         })),
 });
 
-export const createAuthActionsSlice: StateCreator<AuthState, [["zustand/devtools", never]], [], AuthActionsSlice> = (
-    set,
-    get,
-) => ({
+export const createAuthActionsSlice: StateCreator<
+    AuthState,
+    [["zustand/devtools", never]],
+    [],
+    AuthActionsSlice
+> = (set, get) => ({
     actions: {
         initialize: async () => {
             const { isInitialized, setSession, setStatus, setInitialized } = get();

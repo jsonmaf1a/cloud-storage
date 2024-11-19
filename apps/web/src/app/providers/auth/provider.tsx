@@ -1,4 +1,4 @@
-import { useAuthActions, useAuthStatus } from "@/features/auth";
+import { useAuthActions, useAuthStatus } from "@/features/auth-store";
 import { Loader } from "@/shared/components/loader";
 import { PropsWithChildren, useEffect } from "react";
 

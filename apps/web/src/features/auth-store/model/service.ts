@@ -1,8 +1,6 @@
 import { Nullable, User } from "@cloud/shared";
 import { AUTH_STORAGE_KEYS } from "../config/constants";
 import { StorageService } from "@/shared/lib/storage/model/storage.interface";
-import { JwtUtils } from "@/shared/lib/utils";
-import {} from "@/entities/user";
 
 export class AuthService {
     constructor(private storage: StorageService) {}
@@ -18,10 +16,7 @@ export class AuthService {
 
     storeSession(token: string, tokenExpires: number): void {
         localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
-        localStorage.setItem(
-            AUTH_STORAGE_KEYS.TOKEN_EXPIRES,
-            tokenExpires.toString(),
-        );
+        localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN_EXPIRES, tokenExpires.toString());
     }
 
     clearSession(): void {

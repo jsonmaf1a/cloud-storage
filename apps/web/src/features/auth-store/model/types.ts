@@ -28,9 +28,6 @@ export interface AuthActionsSlice {
     };
 }
 
-export type AuthStatus = Pick<
-    AuthStatusSlice,
-    "isLoading" | "isAuthenticated" | "error"
->;
+export type AuthStatus = Pick<AuthStatusSlice, "isLoading" | "isAuthenticated" | "error">;
 
 export type AuthState = AuthSessionSlice & AuthStatusSlice & AuthActionsSlice;

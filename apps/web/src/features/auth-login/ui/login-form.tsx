@@ -1,11 +1,10 @@
 import { Input } from "@/shared/components/ui/input";
 import { Link } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { useLogin } from "../../hooks/useLogin";
-import { useLoginForm } from "../../hooks/useLoginForm";
+import { useLogin } from "../hooks/useLogin";
+import { useLoginForm } from "../hooks/useLoginForm";
 import { RegisterPropmt } from "./register-prompt";
 import { RememberMe } from "./remember-me";
-import { ToastContainer } from "react-toastify";
 
 export function LoginForm() {
     const { register, handleSubmit, errors } = useLoginForm();
@@ -20,16 +19,8 @@ export function LoginForm() {
     return (
         <form className="flex flex-col gap-3 w-2/4" onSubmit={onSubmit}>
             <h1 className="font-bold text-3xl">Login</h1>
-            <Input
-                {...register("email", { required: true })}
-                placeholder="Email"
-                type="email"
-            />
-            <Input
-                {...register("password", { required: true })}
-                placeholder="Password"
-                type="password"
-            />
+            <Input {...register("email", { required: true })} placeholder="Email" type="email" />
+            <Input {...register("password", { required: true })} placeholder="Password" type="password" />
 
             <div className="flex items-center justify-between text-sm mb-4">
                 <RememberMe register={register} />

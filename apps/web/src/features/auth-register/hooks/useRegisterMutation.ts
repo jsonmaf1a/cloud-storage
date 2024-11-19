@@ -1,6 +1,6 @@
 import { tsr } from "@/shared/api";
 import { AuthRegisterDto } from "@cloud/shared";
-import { AUTH_QUERY_KEYS } from "../config/constants";
+import { REGISTER_QUERY_KEY } from "../config/constants";
 
 export const useRegisterMutation = () => {
     const { mutateAsync, isPending } = tsr.auth.emailRegister.useMutation();
@@ -12,12 +12,9 @@ export const useRegisterMutation = () => {
                 { body: credentials },
                 {
                     onSuccess: (data) => {
-                        tsrQueryClient.setQueryData(
-                            [AUTH_QUERY_KEYS.REGISTER_QUERY_KEY],
-                            {
-                                body: data,
-                            },
-                        );
+                        tsrQueryClient.setQueryData([REGISTER_QUERY_KEY], {
+                            body: data,
+                        });
                     },
                 },
             );
