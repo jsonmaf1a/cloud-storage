@@ -318,7 +318,6 @@ export class AuthService {
         }
 
         const user = await this.usersService.findById(userId);
-        console.log(user);
 
         if (!user) {
             throw new NotFoundException({
@@ -331,8 +330,6 @@ export class AuthService {
         user.status = {
             id: Status.Active,
         };
-
-        console.log(user);
 
         await this.usersService.update(user.id, user);
     }

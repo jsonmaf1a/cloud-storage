@@ -68,9 +68,16 @@ export class AuthController {
         return tsRestHandler(c.emailRegister, async () => {
             await this.service.register(createUserDto);
 
+            const data = await this.service.validateLogin({
+                email: createUserDto.email,
+                password: createUserDto.password,
+            });
+
+            const validatedData = AuthLoginResponseDtoSchema.parse(data);
+
             return {
                 status: HttpStatus.CREATED,
-                body: undefined,
+                body: validatedData,
             };
         });
     }
