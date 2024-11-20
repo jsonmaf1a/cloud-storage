@@ -1,5 +1,5 @@
 import { useConfirmEmail } from "@/features/confirm-email";
-import { Loader } from "@/shared/components/loader";
+import { Loader } from "@/shared/components/Loader.tsx";
 import { createFileRoute } from "@tanstack/react-router";
 import { z } from "zod";
 

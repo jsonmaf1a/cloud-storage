@@ -1,10 +1,10 @@
-import { Input } from "@/shared/components/ui/input";
+import { Input } from "@/shared/components/ui/Input.tsx";
 import { Link } from "@tanstack/react-router";
 import { useCallback } from "react";
 import { useLogin } from "../hooks/useLogin";
 import { useLoginForm } from "../hooks/useLoginForm";
-import { RegisterPropmt } from "./register-prompt";
-import { RememberMe } from "./remember-me";
+import { RegisterPropmt } from "./RegisterPrompt.tsx";
+import { RememberMe } from "./RememberMe.tsx";
 
 export function LoginForm() {
     const { register, handleSubmit } = useLoginForm();

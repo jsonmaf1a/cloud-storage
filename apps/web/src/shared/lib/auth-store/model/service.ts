@@ -1,6 +1,6 @@
 import { Nullable, User } from "@cloud/shared";
 import { AUTH_STORAGE_KEYS } from "../config/constants";
-import { StorageService } from "@/shared/lib/storage/model/storage.interface";
+import { StorageService } from "@/shared/lib/storage/model/Storage.ts";
 
 export class AuthService {
     constructor(private storage: StorageService) {}

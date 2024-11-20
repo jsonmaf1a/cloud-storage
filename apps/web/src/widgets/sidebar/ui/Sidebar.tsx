@@ -1,9 +1,9 @@
-import { Logo } from "@/shared/components/logo";
-import { Button } from "@/shared/components/ui/button";
+import { Logo } from "@/shared/components/Logo.tsx";
+import { Button } from "@/shared/components/ui/Button.tsx";
 import { useLocation } from "@tanstack/react-router";
 import { useCallback, useState } from "react";
 import { NAVIGATION_ITEMS } from "../model/navigation";
-import { NavigationItem } from "./navigation-item";
+import { NavigationItem } from "./NavigationItem.tsx";
 
 export const Sidebar = () => {
     const [isCollapsed, setIsCollapsed] = useState(window.innerWidth < 1400);

@@ -1,4 +1,4 @@
-import { Loader } from "@/shared/components/loader";
+import { Loader } from "@/shared/components/Loader.tsx";
 import { useAuthActions, useAuthStatus } from "@/shared/lib/auth-store";
 import { PropsWithChildren, useEffect } from "react";
 

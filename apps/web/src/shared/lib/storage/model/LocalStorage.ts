@@ -1,5 +1,5 @@
 import { Nullable } from "@cloud/shared";
-import { StorageService } from "./storage.interface";
+import { StorageService } from "./Storage.ts";
 
 export class LocalStorageService implements StorageService {
     getItem(key: string): Nullable<string> {

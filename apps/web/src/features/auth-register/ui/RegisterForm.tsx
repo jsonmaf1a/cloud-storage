@@ -1,8 +1,8 @@
-import { Input } from "@/shared/components/ui/input";
+import { Input } from "@/shared/components/ui/Input.tsx";
 import { useCallback } from "react";
 import { useRegister } from "../hooks/useRegister";
 import { useRegisterForm } from "../hooks/useRegisterForm";
-import { LoginPrompt } from "./login-prompt";
+import { LoginPrompt } from "./LoginPrompt.tsx";
 
 export function RegisterForm() {
     const { register, handleSubmit } = useRegisterForm();

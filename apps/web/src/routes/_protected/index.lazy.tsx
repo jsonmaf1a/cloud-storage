@@ -1,4 +1,4 @@
-import { Button } from "@/shared/components/ui/button";
+import { Button } from "@/shared/components/ui/Button.tsx";
 import { useAuthActions } from "@/shared/lib/auth-store";
 import { createLazyFileRoute } from "@tanstack/react-router";
 

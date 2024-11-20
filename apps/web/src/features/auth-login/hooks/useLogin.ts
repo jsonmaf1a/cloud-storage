@@ -26,7 +26,7 @@ export const useLogin = () => {
 
                 await login({ user, token, tokenExpires });
                 toast("Login success");
-                navigate({ to: "/" });
+                await navigate({ to: "/" });
             } catch (error) {
                 toast.error("Unexpected error occurred");
                 console.error("Login error:", error);
