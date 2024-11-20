@@ -6,12 +6,7 @@ import { SocialData } from "@/social/social.interface";
 import { Status } from "@/statuses/statuses";
 import { User } from "@/users/domain/user";
 import { UsersService } from "@/users/users.service";
-import {
-    AuthLoginResponseDto,
-    AuthLoginResponseDtoSchema,
-    Nullable,
-    UserSchema,
-} from "@cloud/shared";
+import { AuthLoginResponseDto, Nullable, UserSchema } from "@cloud/shared";
 import {
     HttpStatus,
     Injectable,
@@ -34,7 +29,6 @@ import { JwtPayload } from "./types/jwt-payload";
 import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { ExposeGroup } from "@/common/enums/expose-group";
-import { z } from "zod";
 
 @Injectable()
 export class AuthService {
@@ -76,10 +70,7 @@ export class AuthService {
             });
         }
 
-        const isValidPassword = await bcrypt.compare(
-            loginDto.password,
-            user.password,
-        );
+        const isValidPassword = await bcrypt.compare(loginDto.password, user.password);
 
         if (!isValidPassword) {
             throw new UnprocessableEntityException({
@@ -90,10 +81,7 @@ export class AuthService {
             });
         }
 
-        const hash = crypto
-            .createHash("sha256")
-            .update(randomStringGenerator())
-            .digest("hex");
+        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
 
         const session = await this.sessionService.create({
             user,
@@ -121,10 +109,7 @@ export class AuthService {
         };
     }
 
-    async validateSocialLogin(
-        authProvider: string,
-        socialData: SocialData,
-    ): Promise<AuthLoginResponseDto> {
+    async validateSocialLogin(authProvider: string, socialData: SocialData): Promise<AuthLoginResponseDto> {
         let user: Nullable<User> = null;
         const socialEmail = socialData.email?.toLowerCase();
         let userByEmail: Nullable<User> = null;
@@ -173,10 +158,7 @@ export class AuthService {
             });
         }
 
-        const hash = crypto
-            .createHash("sha256")
-            .update(randomStringGenerator())
-            .digest("hex");
+        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
 
         const session = await this.sessionService.create({
             user,
@@ -222,18 +204,12 @@ export class AuthService {
                 confirmEmailUserId: user.id,
             },
             {
-                secret: this.configService.getOrThrow(
-                    "auth.confirmEmailSecret",
-                    {
-                        infer: true,
-                    },
-                ),
-                expiresIn: this.configService.getOrThrow(
-                    "auth.confirmEmailExpiration",
-                    {
-                        infer: true,
-                    },
-                ),
+                secret: this.configService.getOrThrow("auth.confirmEmailSecret", {
+                    infer: true,
+                }),
+                expiresIn: this.configService.getOrThrow("auth.confirmEmailExpiration", {
+                    infer: true,
+                }),
             },
         );
 
@@ -252,12 +228,9 @@ export class AuthService {
             const jwtData = await this.jwtService.verifyAsync<{
                 confirmEmailUserId: User["id"];
             }>(hash, {
-                secret: this.configService.getOrThrow(
-                    "auth.confirmEmailSecret",
-                    {
-                        infer: true,
-                    },
-                ),
+                secret: this.configService.getOrThrow("auth.confirmEmailSecret", {
+                    infer: true,
+                }),
             });
 
             userId = jwtData.confirmEmailUserId;
@@ -272,10 +245,7 @@ export class AuthService {
 
         const user = await this.usersService.findById(userId);
 
-        if (
-            !user ||
-            user?.status?.id?.toString() !== Status.Inactive.toString()
-        ) {
+        if (!user || user?.status?.id?.toString() !== Status.Inactive.toString()) {
             throw new NotFoundException({
                 status: HttpStatus.NOT_FOUND,
                 error: "notFound",
@@ -298,12 +268,9 @@ export class AuthService {
                 confirmEmailUserId: User["id"];
                 newEmail: User["email"];
             }>(hash, {
-                secret: this.configService.getOrThrow(
-                    "auth.confirmEmailSecret",
-                    {
-                        infer: true,
-                    },
-                ),
+                secret: this.configService.getOrThrow("auth.confirmEmailSecret", {
+                    infer: true,
+                }),
             });
 
             userId = jwtData.confirmEmailUserId;
@@ -346,12 +313,9 @@ export class AuthService {
             });
         }
 
-        const tokenExpiresIn = this.configService.getOrThrow(
-            "auth.forgotExpiration",
-            {
-                infer: true,
-            },
-        );
+        const tokenExpiresIn = this.configService.getOrThrow("auth.forgotExpiration", {
+            infer: true,
+        });
 
         const tokenExpires = Date.now() + ms(tokenExpiresIn);
 
@@ -422,10 +386,7 @@ export class AuthService {
         return this.usersService.findById(userJwtPayload.id);
     }
 
-    async update(
-        userJwtPayload: JwtPayload,
-        userDto: AuthUpdateDto,
-    ): Promise<Nullable<User>> {
+    async update(userJwtPayload: JwtPayload, userDto: AuthUpdateDto): Promise<Nullable<User>> {
         const currentUser = await this.usersService.findById(userJwtPayload.id);
 
         if (!currentUser) {
@@ -456,10 +417,7 @@ export class AuthService {
                 });
             }
 
-            const isValidOldPassword = await bcrypt.compare(
-                userDto.oldPassword,
-                currentUser.password,
-            );
+            const isValidOldPassword = await bcrypt.compare(userDto.oldPassword, currentUser.password);
 
             if (!isValidOldPassword) {
                 throw new UnprocessableEntityException({
@@ -477,9 +435,7 @@ export class AuthService {
         }
 
         if (userDto.email && userDto.email !== currentUser.email) {
-            const userByEmail = await this.usersService.findByEmail(
-                userDto.email,
-            );
+            const userByEmail = await this.usersService.findByEmail(userDto.email);
 
             if (userByEmail && userByEmail.id !== currentUser.id) {
                 throw new UnprocessableEntityException({
@@ -496,18 +452,12 @@ export class AuthService {
                     newEmail: userDto.email,
                 },
                 {
-                    secret: this.configService.getOrThrow(
-                        "auth.confirmEmailSecret",
-                        {
-                            infer: true,
-                        },
-                    ),
-                    expiresIn: this.configService.getOrThrow(
-                        "auth.confirmEmailExpiration",
-                        {
-                            infer: true,
-                        },
-                    ),
+                    secret: this.configService.getOrThrow("auth.confirmEmailSecret", {
+                        infer: true,
+                    }),
+                    expiresIn: this.configService.getOrThrow("auth.confirmEmailExpiration", {
+                        infer: true,
+                    }),
                 },
             );
 
@@ -540,10 +490,7 @@ export class AuthService {
             throw new UnauthorizedException();
         }
 
-        const hash = crypto
-            .createHash("sha256")
-            .update(randomStringGenerator())
-            .digest("hex");
+        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
 
         await this.sessionService.update(session.id, {
             hash,
@@ -575,12 +522,9 @@ export class AuthService {
         sessionId: Session["id"];
         hash: Session["hash"];
     }) {
-        const tokenExpiresIn = this.configService.getOrThrow(
-            "auth.expiration",
-            {
-                infer: true,
-            },
-        );
+        const tokenExpiresIn = this.configService.getOrThrow("auth.expiration", {
+            infer: true,
+        });
 
         console.log(tokenExpiresIn);
         console.log(ms(tokenExpiresIn));
@@ -607,18 +551,12 @@ export class AuthService {
                     hash: data.hash,
                 },
                 {
-                    secret: this.configService.getOrThrow(
-                        "auth.refreshSecret",
-                        {
-                            infer: true,
-                        },
-                    ),
-                    expiresIn: this.configService.getOrThrow(
-                        "auth.refreshExpiration",
-                        {
-                            infer: true,
-                        },
-                    ),
+                    secret: this.configService.getOrThrow("auth.refreshSecret", {
+                        infer: true,
+                    }),
+                    expiresIn: this.configService.getOrThrow("auth.refreshExpiration", {
+                        infer: true,
+                    }),
                 },
             ),
         ]);

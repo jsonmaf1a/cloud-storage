@@ -9,9 +9,9 @@ import {
     AuthUpdateDtoSchema,
     AuthLoginResponseDtoSchema,
     AuthRefreshResponseDtoSchema,
-} from "../schemas/auth.schema";
-import { UserSchema } from "../schemas/user.schema";
-import { HttpStatus } from "../constants/http";
+} from "../schemas";
+import { UserSchema } from "../schemas";
+import { HttpStatus } from "../constants";
 
 const c = initContract();
 
@@ -34,8 +34,9 @@ export const AuthContract = c.router(
             path: "/email/confirm",
             responses: {
                 [HttpStatus.NO_CONTENT]: z.void(),
-                // [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
-                // [HttpStatus.NOT_FOUND]: z.string(),
+                [HttpStatus.UNPROCESSABLE_ENTITY]: z.string(),
+                [HttpStatus.NOT_FOUND]: z.string(),
+                [HttpStatus.INTERNAL_SERVER_ERROR]: z.string(),
             },
             body: AuthConfirmEmailDtoSchema,
             summary: "Confirm email",

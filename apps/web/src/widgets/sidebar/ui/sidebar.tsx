@@ -34,10 +34,12 @@ export const Sidebar = () => {
                 <div className="flex flex-col justify-center items-center gap-3 px-5 py-5 rounded-xl bg-yellow-200 text-center text-black font-medium">
                     Upgrade to Premium
                     <p className="font-light text-sm">
-                        Get additional storage, as well as various exclusive
-                        features
+                        Get additional storage, as well as various exclusive features
                     </p>
-                    <Button className="bg-black text-white p-6 text-md hover:bg-black hover:underline">
+                    <Button
+                        onClick={handleToggleSidebar}
+                        className="bg-black text-white p-6 text-md hover:bg-black hover:underline"
+                    >
                         Upgrade Now
                     </Button>
                 </div>

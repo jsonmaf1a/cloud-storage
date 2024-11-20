@@ -5,10 +5,7 @@ import "./globals.css";
 
 const rootElement = document.getElementById("root");
 
-if (!rootElement)
-    throw new Error(
-        "Failed to initialize app: Could not locate the root element.",
-    );
+if (!rootElement) throw new Error("Failed to initialize app: Could not locate the root element.");
 
 const root = createRoot(rootElement);
 

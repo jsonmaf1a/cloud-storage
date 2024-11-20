@@ -5,7 +5,7 @@ import { useRegisterForm } from "../hooks/useRegisterForm";
 import { LoginPrompt } from "./login-prompt";
 
 export function RegisterForm() {
-    const { register, handleSubmit, errors } = useRegisterForm();
+    const { register, handleSubmit } = useRegisterForm();
 
     const { handleRegisterSubmit, isPending } = useRegister();
 
@@ -17,10 +17,24 @@ export function RegisterForm() {
     return (
         <form className="flex flex-col gap-3 w-2/4" onSubmit={onSubmit}>
             <h1 className="font-bold text-3xl">Register</h1>
-            <Input {...register("firstName", { required: true })} placeholder="First name" />
-            <Input {...register("lastName", { required: true })} placeholder="Last name" />
-            <Input {...register("email", { required: true })} placeholder="Email" type="email" />
-            <Input {...register("password", { required: true })} placeholder="Password" type="password" />
+            <Input
+                {...register("firstName", { required: true })}
+                placeholder="First name"
+            />
+            <Input
+                {...register("lastName", { required: true })}
+                placeholder="Last name"
+            />
+            <Input
+                {...register("email", { required: true })}
+                placeholder="Email"
+                type="email"
+            />
+            <Input
+                {...register("password", { required: true })}
+                placeholder="Password"
+                type="password"
+            />
             <input
                 type="submit"
                 value={isPending ? "Registration..." : "Register"}

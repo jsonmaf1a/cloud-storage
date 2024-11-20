@@ -1,1 +1,1 @@
-export { useConfirmEmailMutation } from "./hooks/useConfirmEmailMutation";
+export { useConfirmEmail } from "./hooks/useConfirmEmail";

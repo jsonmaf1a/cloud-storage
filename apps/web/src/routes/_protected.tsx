@@ -1,12 +1,12 @@
 import { createFileRoute, Outlet } from "@tanstack/react-router";
 import { Sidebar } from "@/widgets/sidebar";
-import { useProtectRoute } from "@/shared/lib/hooks/use-protect-route";
+import { useProtectRoute } from "@/shared/lib/hooks/useProtectRoute";
 import { Loader } from "@/shared/components/loader";
 import { ErrorBoundary } from "react-error-boundary";
 import { ErrorFallback } from "@/shared/components/error-fallback";
 import { Suspense } from "react";
 
-export const Route = createFileRoute("/_protected/_layout")({
+export const Route = createFileRoute("/_protected")({
     component: RouteComponent,
 });
 

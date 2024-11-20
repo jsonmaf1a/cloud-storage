@@ -1,8 +1,7 @@
 import { HttpStatus } from "../constants/http";
 import { initContract } from "@ts-rest/core";
 import { z } from "zod";
-import { CreateUserDtoSchema, UserSchema } from "../schemas/user.schema";
-import { UpdateUserDtoSchema } from "../schemas/user.schema";
+import { CreateUserDtoSchema, UserSchema, UpdateUserDtoSchema } from "../schemas";
 
 const c = initContract();
 

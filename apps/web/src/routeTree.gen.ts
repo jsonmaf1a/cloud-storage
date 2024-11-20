@@ -13,28 +13,33 @@ import { createFileRoute } from '@tanstack/react-router'
 // Import Routes
 
 import { Route as rootRoute } from './routes/__root'
+import { Route as ProtectedImport } from './routes/_protected'
 import { Route as AuthConfirmEmailImport } from './routes/auth/confirm-email'
-import { Route as ProtectedLayoutImport } from './routes/_protected/_layout'
 
 // Create Virtual Routes
 
+const ProtectedIndexLazyImport = createFileRoute('/_protected/')()
 const AuthRegisterLazyImport = createFileRoute('/auth/register')()
 const AuthLoginLazyImport = createFileRoute('/auth/login')()
-const ProtectedLayoutIndexLazyImport = createFileRoute('/_protected/_layout/')()
-const ProtectedLayoutTrashLazyImport = createFileRoute(
-  '/_protected/_layout/trash',
-)()
-const ProtectedLayoutSettingsLazyImport = createFileRoute(
-  '/_protected/_layout/settings',
-)()
-const ProtectedLayoutFilesLazyImport = createFileRoute(
-  '/_protected/_layout/files',
-)()
-const ProtectedLayoutFavoritesLazyImport = createFileRoute(
-  '/_protected/_layout/favorites',
-)()
+const ProtectedTrashLazyImport = createFileRoute('/_protected/trash')()
+const ProtectedSettingsLazyImport = createFileRoute('/_protected/settings')()
+const ProtectedFilesLazyImport = createFileRoute('/_protected/files')()
+const ProtectedFavoritesLazyImport = createFileRoute('/_protected/favorites')()
 
 // Create/Update Routes
+
+const ProtectedRoute = ProtectedImport.update({
+  id: '/_protected',
+  getParentRoute: () => rootRoute,
+} as any)
+
+const ProtectedIndexLazyRoute = ProtectedIndexLazyImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/index.lazy').then((d) => d.Route),
+)
 
 const AuthRegisterLazyRoute = AuthRegisterLazyImport.update({
   id: '/auth/register',
@@ -48,68 +53,53 @@ const AuthLoginLazyRoute = AuthLoginLazyImport.update({
   getParentRoute: () => rootRoute,
 } as any).lazy(() => import('./routes/auth/login.lazy').then((d) => d.Route))
 
+const ProtectedTrashLazyRoute = ProtectedTrashLazyImport.update({
+  id: '/trash',
+  path: '/trash',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/trash.lazy').then((d) => d.Route),
+)
+
+const ProtectedSettingsLazyRoute = ProtectedSettingsLazyImport.update({
+  id: '/settings',
+  path: '/settings',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/settings.lazy').then((d) => d.Route),
+)
+
+const ProtectedFilesLazyRoute = ProtectedFilesLazyImport.update({
+  id: '/files',
+  path: '/files',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/files.lazy').then((d) => d.Route),
+)
+
+const ProtectedFavoritesLazyRoute = ProtectedFavoritesLazyImport.update({
+  id: '/favorites',
+  path: '/favorites',
+  getParentRoute: () => ProtectedRoute,
+} as any).lazy(() =>
+  import('./routes/_protected/favorites.lazy').then((d) => d.Route),
+)
+
 const AuthConfirmEmailRoute = AuthConfirmEmailImport.update({
   id: '/auth/confirm-email',
   path: '/auth/confirm-email',
   getParentRoute: () => rootRoute,
 } as any)
 
-const ProtectedLayoutRoute = ProtectedLayoutImport.update({
-  id: '/_protected/_layout',
-  getParentRoute: () => rootRoute,
-} as any)
-
-const ProtectedLayoutIndexLazyRoute = ProtectedLayoutIndexLazyImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => ProtectedLayoutRoute,
-} as any).lazy(() =>
-  import('./routes/_protected/_layout/index.lazy').then((d) => d.Route),
-)
-
-const ProtectedLayoutTrashLazyRoute = ProtectedLayoutTrashLazyImport.update({
-  id: '/trash',
-  path: '/trash',
-  getParentRoute: () => ProtectedLayoutRoute,
-} as any).lazy(() =>
-  import('./routes/_protected/_layout/trash.lazy').then((d) => d.Route),
-)
-
-const ProtectedLayoutSettingsLazyRoute =
-  ProtectedLayoutSettingsLazyImport.update({
-    id: '/settings',
-    path: '/settings',
-    getParentRoute: () => ProtectedLayoutRoute,
-  } as any).lazy(() =>
-    import('./routes/_protected/_layout/settings.lazy').then((d) => d.Route),
-  )
-
-const ProtectedLayoutFilesLazyRoute = ProtectedLayoutFilesLazyImport.update({
-  id: '/files',
-  path: '/files',
-  getParentRoute: () => ProtectedLayoutRoute,
-} as any).lazy(() =>
-  import('./routes/_protected/_layout/files.lazy').then((d) => d.Route),
-)
-
-const ProtectedLayoutFavoritesLazyRoute =
-  ProtectedLayoutFavoritesLazyImport.update({
-    id: '/favorites',
-    path: '/favorites',
-    getParentRoute: () => ProtectedLayoutRoute,
-  } as any).lazy(() =>
-    import('./routes/_protected/_layout/favorites.lazy').then((d) => d.Route),
-  )
-
 // Populate the FileRoutesByPath interface
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/_protected/_layout': {
-      id: '/_protected/_layout'
+    '/_protected': {
+      id: '/_protected'
       path: ''
       fullPath: ''
-      preLoaderRoute: typeof ProtectedLayoutImport
+      preLoaderRoute: typeof ProtectedImport
       parentRoute: typeof rootRoute
     }
     '/auth/confirm-email': {
@@ -118,6 +108,34 @@ declare module '@tanstack/react-router' {
       fullPath: '/auth/confirm-email'
       preLoaderRoute: typeof AuthConfirmEmailImport
       parentRoute: typeof rootRoute
+    }
+    '/_protected/favorites': {
+      id: '/_protected/favorites'
+      path: '/favorites'
+      fullPath: '/favorites'
+      preLoaderRoute: typeof ProtectedFavoritesLazyImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/files': {
+      id: '/_protected/files'
+      path: '/files'
+      fullPath: '/files'
+      preLoaderRoute: typeof ProtectedFilesLazyImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/settings': {
+      id: '/_protected/settings'
+      path: '/settings'
+      fullPath: '/settings'
+      preLoaderRoute: typeof ProtectedSettingsLazyImport
+      parentRoute: typeof ProtectedImport
+    }
+    '/_protected/trash': {
+      id: '/_protected/trash'
+      path: '/trash'
+      fullPath: '/trash'
+      preLoaderRoute: typeof ProtectedTrashLazyImport
+      parentRoute: typeof ProtectedImport
     }
     '/auth/login': {
       id: '/auth/login'
@@ -133,100 +151,72 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthRegisterLazyImport
       parentRoute: typeof rootRoute
     }
-    '/_protected/_layout/favorites': {
-      id: '/_protected/_layout/favorites'
-      path: '/favorites'
-      fullPath: '/favorites'
-      preLoaderRoute: typeof ProtectedLayoutFavoritesLazyImport
-      parentRoute: typeof ProtectedLayoutImport
-    }
-    '/_protected/_layout/files': {
-      id: '/_protected/_layout/files'
-      path: '/files'
-      fullPath: '/files'
-      preLoaderRoute: typeof ProtectedLayoutFilesLazyImport
-      parentRoute: typeof ProtectedLayoutImport
-    }
-    '/_protected/_layout/settings': {
-      id: '/_protected/_layout/settings'
-      path: '/settings'
-      fullPath: '/settings'
-      preLoaderRoute: typeof ProtectedLayoutSettingsLazyImport
-      parentRoute: typeof ProtectedLayoutImport
-    }
-    '/_protected/_layout/trash': {
-      id: '/_protected/_layout/trash'
-      path: '/trash'
-      fullPath: '/trash'
-      preLoaderRoute: typeof ProtectedLayoutTrashLazyImport
-      parentRoute: typeof ProtectedLayoutImport
-    }
-    '/_protected/_layout/': {
-      id: '/_protected/_layout/'
+    '/_protected/': {
+      id: '/_protected/'
       path: '/'
       fullPath: '/'
-      preLoaderRoute: typeof ProtectedLayoutIndexLazyImport
-      parentRoute: typeof ProtectedLayoutImport
+      preLoaderRoute: typeof ProtectedIndexLazyImport
+      parentRoute: typeof ProtectedImport
     }
   }
 }
 
 // Create and export the route tree
 
-interface ProtectedLayoutRouteChildren {
-  ProtectedLayoutFavoritesLazyRoute: typeof ProtectedLayoutFavoritesLazyRoute
-  ProtectedLayoutFilesLazyRoute: typeof ProtectedLayoutFilesLazyRoute
-  ProtectedLayoutSettingsLazyRoute: typeof ProtectedLayoutSettingsLazyRoute
-  ProtectedLayoutTrashLazyRoute: typeof ProtectedLayoutTrashLazyRoute
-  ProtectedLayoutIndexLazyRoute: typeof ProtectedLayoutIndexLazyRoute
+interface ProtectedRouteChildren {
+  ProtectedFavoritesLazyRoute: typeof ProtectedFavoritesLazyRoute
+  ProtectedFilesLazyRoute: typeof ProtectedFilesLazyRoute
+  ProtectedSettingsLazyRoute: typeof ProtectedSettingsLazyRoute
+  ProtectedTrashLazyRoute: typeof ProtectedTrashLazyRoute
+  ProtectedIndexLazyRoute: typeof ProtectedIndexLazyRoute
 }
 
-const ProtectedLayoutRouteChildren: ProtectedLayoutRouteChildren = {
-  ProtectedLayoutFavoritesLazyRoute: ProtectedLayoutFavoritesLazyRoute,
-  ProtectedLayoutFilesLazyRoute: ProtectedLayoutFilesLazyRoute,
-  ProtectedLayoutSettingsLazyRoute: ProtectedLayoutSettingsLazyRoute,
-  ProtectedLayoutTrashLazyRoute: ProtectedLayoutTrashLazyRoute,
-  ProtectedLayoutIndexLazyRoute: ProtectedLayoutIndexLazyRoute,
+const ProtectedRouteChildren: ProtectedRouteChildren = {
+  ProtectedFavoritesLazyRoute: ProtectedFavoritesLazyRoute,
+  ProtectedFilesLazyRoute: ProtectedFilesLazyRoute,
+  ProtectedSettingsLazyRoute: ProtectedSettingsLazyRoute,
+  ProtectedTrashLazyRoute: ProtectedTrashLazyRoute,
+  ProtectedIndexLazyRoute: ProtectedIndexLazyRoute,
 }
 
-const ProtectedLayoutRouteWithChildren = ProtectedLayoutRoute._addFileChildren(
-  ProtectedLayoutRouteChildren,
+const ProtectedRouteWithChildren = ProtectedRoute._addFileChildren(
+  ProtectedRouteChildren,
 )
 
 export interface FileRoutesByFullPath {
-  '': typeof ProtectedLayoutRouteWithChildren
+  '': typeof ProtectedRouteWithChildren
   '/auth/confirm-email': typeof AuthConfirmEmailRoute
+  '/favorites': typeof ProtectedFavoritesLazyRoute
+  '/files': typeof ProtectedFilesLazyRoute
+  '/settings': typeof ProtectedSettingsLazyRoute
+  '/trash': typeof ProtectedTrashLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
-  '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
-  '/files': typeof ProtectedLayoutFilesLazyRoute
-  '/settings': typeof ProtectedLayoutSettingsLazyRoute
-  '/trash': typeof ProtectedLayoutTrashLazyRoute
-  '/': typeof ProtectedLayoutIndexLazyRoute
+  '/': typeof ProtectedIndexLazyRoute
 }
 
 export interface FileRoutesByTo {
   '/auth/confirm-email': typeof AuthConfirmEmailRoute
+  '/favorites': typeof ProtectedFavoritesLazyRoute
+  '/files': typeof ProtectedFilesLazyRoute
+  '/settings': typeof ProtectedSettingsLazyRoute
+  '/trash': typeof ProtectedTrashLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
-  '/favorites': typeof ProtectedLayoutFavoritesLazyRoute
-  '/files': typeof ProtectedLayoutFilesLazyRoute
-  '/settings': typeof ProtectedLayoutSettingsLazyRoute
-  '/trash': typeof ProtectedLayoutTrashLazyRoute
-  '/': typeof ProtectedLayoutIndexLazyRoute
+  '/': typeof ProtectedIndexLazyRoute
 }
 
 export interface FileRoutesById {
   __root__: typeof rootRoute
-  '/_protected/_layout': typeof ProtectedLayoutRouteWithChildren
+  '/_protected': typeof ProtectedRouteWithChildren
   '/auth/confirm-email': typeof AuthConfirmEmailRoute
+  '/_protected/favorites': typeof ProtectedFavoritesLazyRoute
+  '/_protected/files': typeof ProtectedFilesLazyRoute
+  '/_protected/settings': typeof ProtectedSettingsLazyRoute
+  '/_protected/trash': typeof ProtectedTrashLazyRoute
   '/auth/login': typeof AuthLoginLazyRoute
   '/auth/register': typeof AuthRegisterLazyRoute
-  '/_protected/_layout/favorites': typeof ProtectedLayoutFavoritesLazyRoute
-  '/_protected/_layout/files': typeof ProtectedLayoutFilesLazyRoute
-  '/_protected/_layout/settings': typeof ProtectedLayoutSettingsLazyRoute
-  '/_protected/_layout/trash': typeof ProtectedLayoutTrashLazyRoute
-  '/_protected/_layout/': typeof ProtectedLayoutIndexLazyRoute
+  '/_protected/': typeof ProtectedIndexLazyRoute
 }
 
 export interface FileRouteTypes {
@@ -234,46 +224,46 @@ export interface FileRouteTypes {
   fullPaths:
     | ''
     | '/auth/confirm-email'
-    | '/auth/login'
-    | '/auth/register'
     | '/favorites'
     | '/files'
     | '/settings'
     | '/trash'
+    | '/auth/login'
+    | '/auth/register'
     | '/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/auth/confirm-email'
-    | '/auth/login'
-    | '/auth/register'
     | '/favorites'
     | '/files'
     | '/settings'
     | '/trash'
+    | '/auth/login'
+    | '/auth/register'
     | '/'
   id:
     | '__root__'
-    | '/_protected/_layout'
+    | '/_protected'
     | '/auth/confirm-email'
+    | '/_protected/favorites'
+    | '/_protected/files'
+    | '/_protected/settings'
+    | '/_protected/trash'
     | '/auth/login'
     | '/auth/register'
-    | '/_protected/_layout/favorites'
-    | '/_protected/_layout/files'
-    | '/_protected/_layout/settings'
-    | '/_protected/_layout/trash'
-    | '/_protected/_layout/'
+    | '/_protected/'
   fileRoutesById: FileRoutesById
 }
 
 export interface RootRouteChildren {
-  ProtectedLayoutRoute: typeof ProtectedLayoutRouteWithChildren
+  ProtectedRoute: typeof ProtectedRouteWithChildren
   AuthConfirmEmailRoute: typeof AuthConfirmEmailRoute
   AuthLoginLazyRoute: typeof AuthLoginLazyRoute
   AuthRegisterLazyRoute: typeof AuthRegisterLazyRoute
 }
 
 const rootRouteChildren: RootRouteChildren = {
-  ProtectedLayoutRoute: ProtectedLayoutRouteWithChildren,
+  ProtectedRoute: ProtectedRouteWithChildren,
   AuthConfirmEmailRoute: AuthConfirmEmailRoute,
   AuthLoginLazyRoute: AuthLoginLazyRoute,
   AuthRegisterLazyRoute: AuthRegisterLazyRoute,
@@ -289,24 +279,40 @@ export const routeTree = rootRoute
     "__root__": {
       "filePath": "__root.tsx",
       "children": [
-        "/_protected/_layout",
+        "/_protected",
         "/auth/confirm-email",
         "/auth/login",
         "/auth/register"
       ]
     },
-    "/_protected/_layout": {
-      "filePath": "_protected/_layout.tsx",
+    "/_protected": {
+      "filePath": "_protected.tsx",
       "children": [
-        "/_protected/_layout/favorites",
-        "/_protected/_layout/files",
-        "/_protected/_layout/settings",
-        "/_protected/_layout/trash",
-        "/_protected/_layout/"
+        "/_protected/favorites",
+        "/_protected/files",
+        "/_protected/settings",
+        "/_protected/trash",
+        "/_protected/"
       ]
     },
     "/auth/confirm-email": {
       "filePath": "auth/confirm-email.tsx"
+    },
+    "/_protected/favorites": {
+      "filePath": "_protected/favorites.lazy.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/files": {
+      "filePath": "_protected/files.lazy.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/settings": {
+      "filePath": "_protected/settings.lazy.tsx",
+      "parent": "/_protected"
+    },
+    "/_protected/trash": {
+      "filePath": "_protected/trash.lazy.tsx",
+      "parent": "/_protected"
     },
     "/auth/login": {
       "filePath": "auth/login.lazy.tsx"
@@ -314,25 +320,9 @@ export const routeTree = rootRoute
     "/auth/register": {
       "filePath": "auth/register.lazy.tsx"
     },
-    "/_protected/_layout/favorites": {
-      "filePath": "_protected/_layout/favorites.lazy.tsx",
-      "parent": "/_protected/_layout"
-    },
-    "/_protected/_layout/files": {
-      "filePath": "_protected/_layout/files.lazy.tsx",
-      "parent": "/_protected/_layout"
-    },
-    "/_protected/_layout/settings": {
-      "filePath": "_protected/_layout/settings.lazy.tsx",
-      "parent": "/_protected/_layout"
-    },
-    "/_protected/_layout/trash": {
-      "filePath": "_protected/_layout/trash.lazy.tsx",
-      "parent": "/_protected/_layout"
-    },
-    "/_protected/_layout/": {
-      "filePath": "_protected/_layout/index.lazy.tsx",
-      "parent": "/_protected/_layout"
+    "/_protected/": {
+      "filePath": "_protected/index.lazy.tsx",
+      "parent": "/_protected"
     }
   }
 }

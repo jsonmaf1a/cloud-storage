@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "./context";
 import { THEME_CONSTANTS } from "./constants";
 import { Theme } from "@/shared/types/theme";
-import { useMediaQuery } from "../../hooks/use-media-query";
+import { useMediaQuery } from "../../hooks/useMediaQuery";
 
 export type ThemeProviderProps = {
     children: React.ReactNode;

@@ -1,5 +1,11 @@
 import { StateCreator } from "zustand";
-import { AuthActionsSlice, AuthSessionSlice, AuthState, AuthStatusSlice, Session } from "../model/types";
+import {
+    AuthActionsSlice,
+    AuthSessionSlice,
+    AuthState,
+    AuthStatusSlice,
+    Session,
+} from "../model/types";
 import { LocalStorageService } from "@/shared/lib/storage";
 import { AuthService } from "./service";
 import { JwtUtils } from "@/shared/lib/utils";
@@ -43,7 +49,7 @@ export const createAuthActionsSlice: StateCreator<
     [["zustand/devtools", never]],
     [],
     AuthActionsSlice
-> = (set, get) => ({
+> = (_set, get) => ({
     actions: {
         initialize: async () => {
             const { isInitialized, setSession, setStatus, setInitialized } = get();
@@ -99,7 +105,10 @@ export const createAuthActionsSlice: StateCreator<
             } catch (error) {
                 setStatus({
                     isAuthenticated: false,
-                    error: typeof error === "string" ? error : "Auth store initialization error",
+                    error:
+                        typeof error === "string"
+                            ? error
+                            : "Auth store initialization error",
                 });
                 setSession(null);
             } finally {
@@ -122,6 +131,7 @@ export const createAuthActionsSlice: StateCreator<
                     error: null,
                 });
             } catch (error) {
+                console.error(error);
                 setStatus({
                     isAuthenticated: false,
                     error: "Login failed",
@@ -146,6 +156,7 @@ export const createAuthActionsSlice: StateCreator<
                     error: null,
                 });
             } catch (error) {
+                console.error(error);
                 setStatus({ error: "Logout failed" });
             } finally {
                 setStatus({ isLoading: false });
