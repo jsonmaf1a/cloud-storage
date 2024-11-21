@@ -3,9 +3,10 @@ import { ThemeContext } from "./context";
 import { THEME_CONSTANTS } from "./constants";
 import { Theme } from "@/shared/types/theme";
 import { useMediaQuery } from "../../hooks/useMediaQuery";
+import { ReactNode } from "@tanstack/react-router";
 
 export type ThemeProviderProps = {
-    children: React.ReactNode;
+    children: ReactNode;
     defaultTheme?: Theme;
     storageKey?: string;
 };

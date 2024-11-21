@@ -1,4 +1,3 @@
-import * as React from "react";
 import { Outlet, createRootRoute } from "@tanstack/react-router";
 import { TanStackRouterDevtools } from "@tanstack/router-devtools";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
@@ -10,7 +9,7 @@ export const Route = createRootRoute({
 
 function RootComponent() {
     return (
-        <React.Fragment>
+        <>
             <div className="w-svw h-svh">
                 <Outlet />
                 <ToastContainer />
@@ -18,6 +17,6 @@ function RootComponent() {
 
             <ReactQueryDevtools initialIsOpen={false} />
             <TanStackRouterDevtools />
-        </React.Fragment>
+        </>
     );
 }
