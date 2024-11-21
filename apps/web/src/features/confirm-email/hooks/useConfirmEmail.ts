@@ -2,7 +2,7 @@ import { useTsrErrorHandler } from "@/shared/lib/hooks/useTsrErrorHandler";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
-import { CONFIRM_EMAIL_ERRORS } from "../config/constants";
+import { CONFIRM_EMAIL_ERRORS, CONFIRMATION_TIMEOUT } from "../config/constants";
 import { useConfirmEmailMutation } from "./useConfirmEmailMutation";
 
 export function useConfirmEmail(hash: string | undefined) {
@@ -21,7 +21,7 @@ export function useConfirmEmail(hash: string | undefined) {
                     "Confirmation is taking longer than expected. Please try again.",
                 );
             }
-        }, 10000);
+        }, CONFIRMATION_TIMEOUT);
 
         confirmEmail(hash);
         return () => clearTimeout(timeoutId);

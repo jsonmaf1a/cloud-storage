@@ -15,8 +15,8 @@ function RootComponent() {
                 <ToastContainer />
             </div>
 
-            <ReactQueryDevtools initialIsOpen={false} />
-            <TanStackRouterDevtools />
+            {/* <ReactQueryDevtools initialIsOpen={false} /> */}
+            {/* <TanStackRouterDevtools /> */}
         </>
     );
 }

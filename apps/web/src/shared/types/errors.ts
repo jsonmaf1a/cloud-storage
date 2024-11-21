@@ -8,3 +8,8 @@ export type ErrorConfig = {
 };
 
 export type EndpointErrors = ErrorConfig[];
+
+export interface ErrorHandlerOptions {
+    fetchError: string;
+    unknownError: string;
+}
