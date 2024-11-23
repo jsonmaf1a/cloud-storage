@@ -1,5 +1,11 @@
 import { ExposeGroup } from "@/common/enums/expose-group";
+import { JwtRefreshRequest, JwtRequest } from "@/common/types/request";
 import { User } from "@/users/domain/user";
+import {
+    AuthContract,
+    AuthLoginResponseDtoSchema,
+    AuthRefreshResponseDtoSchema,
+} from "@cloud/shared";
 import {
     Body,
     Controller,
@@ -10,12 +16,14 @@ import {
     Patch,
     Post,
     Request,
+    Res,
     SerializeOptions,
     UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { TsRestException, TsRestHandler, tsRestHandler } from "@ts-rest/nest";
+import { Response } from "express";
 import { AuthService } from "./auth.service";
 import { AuthConfirmEmailDto } from "./dto/auth-confirm-email.dto";
 import { AuthForgotPasswordDto } from "./dto/auth-forgot-password";
@@ -25,18 +33,14 @@ import { AuthResetPasswordDto } from "./dto/auth-reset-password.dto";
 import { AuthUpdateDto } from "./dto/auth-update.dto";
 import { LoginResponseDto } from "./dto/login-response.dto";
 import { RefreshResponseDto } from "./dto/refresh-response.dto";
-import { JwtRefreshRequest, JwtRequest } from "@/common/types/request";
-import {
-    AuthContract,
-    AuthLoginResponseDtoSchema,
-    AuthRefreshResponseDtoSchema,
-} from "@cloud/shared";
 
 const c = AuthContract;
 
 @ApiTags("Auth")
 @Controller("auth")
 export class AuthController {
+    private readonly REFRESH_TOKEN_COOKIE_KEY = "refreshToken";
+
     constructor(private readonly service: AuthService) {}
 
     @SerializeOptions({
@@ -48,12 +52,16 @@ export class AuthController {
     })
     @HttpCode(HttpStatus.OK)
     @TsRestHandler(c.emailLogin)
-    async login(@Body() loginDto: AuthLoginDto) {
+    async login(
+        @Body() loginDto: AuthLoginDto,
+        @Res({ passthrough: true }) res: Response,
+    ) {
         return tsRestHandler(c.emailLogin, async () => {
-            const data = await this.service.validateLogin(loginDto);
+            const { refreshToken, ...data } = await this.service.validateLogin(loginDto);
 
             const validatedData = AuthLoginResponseDtoSchema.parse(data);
 
+            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
             return {
                 status: HttpStatus.OK,
                 body: validatedData,
@@ -64,17 +72,21 @@ export class AuthController {
     @Post("email/register")
     @HttpCode(HttpStatus.CREATED)
     @TsRestHandler(c.emailRegister)
-    async register(@Body() createUserDto: AuthRegisterDto) {
+    async register(
+        @Body() createUserDto: AuthRegisterDto,
+        @Res({ passthrough: true }) res: Response,
+    ) {
         return tsRestHandler(c.emailRegister, async () => {
             await this.service.register(createUserDto);
 
-            const data = await this.service.validateLogin({
+            const { refreshToken, ...data } = await this.service.validateLogin({
                 email: createUserDto.email,
                 password: createUserDto.password,
             });
 
             const validatedData = AuthLoginResponseDtoSchema.parse(data);
 
+            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
             return {
                 status: HttpStatus.CREATED,
                 body: validatedData,
@@ -189,15 +201,19 @@ export class AuthController {
     @UseGuards(AuthGuard("jwt-refresh"))
     @HttpCode(HttpStatus.OK)
     @TsRestHandler(c.refresh)
-    async refresh(@Request() request: JwtRefreshRequest) {
+    async refresh(
+        @Request() request: JwtRefreshRequest,
+        @Res({ passthrough: true }) res: Response,
+    ) {
         return tsRestHandler(c.refresh, async () => {
-            const data = await this.service.refreshToken({
+            const { refreshToken, ...data } = await this.service.refreshToken({
                 sessionId: request.user.sessionId,
                 hash: request.user.hash,
             });
 
             const validatedData = AuthRefreshResponseDtoSchema.parse(data);
 
+            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
             return {
                 status: HttpStatus.OK,
                 body: validatedData,
@@ -210,11 +226,10 @@ export class AuthController {
     @UseGuards(AuthGuard("jwt"))
     @HttpCode(HttpStatus.NO_CONTENT)
     @TsRestHandler(c.logout)
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    public async logout(@Request() request: any) {
+    public async logout(@Request() request: JwtRequest) {
         return tsRestHandler(c.logout, async () => {
             await this.service.logout({
-                sessionId: request.session.sessionId,
+                sessionId: request.user.sessionId,
             });
 
             return {
@@ -223,8 +238,8 @@ export class AuthController {
             };
         });
     }
-    @ApiBearerAuth()
 
+    @ApiBearerAuth()
     @SerializeOptions({
         groups: [ExposeGroup.Self],
     })
@@ -235,10 +250,7 @@ export class AuthController {
         type: User,
     })
     @TsRestHandler(c.updateMe)
-    async update(
-        @Request() request: JwtRequest,
-        @Body() userDto: AuthUpdateDto,
-    ) {
+    async update(@Request() request: JwtRequest, @Body() userDto: AuthUpdateDto) {
         return tsRestHandler(c.updateMe, async () => {
             const _user = await this.service.update(request.user, userDto);
 

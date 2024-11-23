@@ -1,3 +1,4 @@
+import { ExposeGroup } from "@/common/enums/expose-group";
 import { GeneralConfig } from "@/config/general.config";
 import { MailService } from "@/mail/mail.service";
 import { Session } from "@/session/domain/session";
@@ -11,6 +12,7 @@ import {
     HttpStatus,
     Injectable,
     NotFoundException,
+    Res,
     UnauthorizedException,
     UnprocessableEntityException,
 } from "@nestjs/common";
@@ -25,10 +27,9 @@ import { AuthProviders } from "./auth-providers";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterDto } from "./dto/auth-register.dto";
 import { AuthUpdateDto } from "./dto/auth-update.dto";
+import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayload } from "./types/jwt-payload";
 import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
-import { LoginResponseDto } from "./dto/login-response.dto";
-import { ExposeGroup } from "@/common/enums/expose-group";
 
 @Injectable()
 export class AuthService {
@@ -81,7 +82,10 @@ export class AuthService {
             });
         }
 
-        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
+        const hash = crypto
+            .createHash("sha256")
+            .update(randomStringGenerator())
+            .digest("hex");
 
         const session = await this.sessionService.create({
             user,
@@ -109,7 +113,10 @@ export class AuthService {
         };
     }
 
-    async validateSocialLogin(authProvider: string, socialData: SocialData): Promise<AuthLoginResponseDto> {
+    async validateSocialLogin(
+        authProvider: string,
+        socialData: SocialData,
+    ): Promise<AuthLoginResponseDto> {
         let user: Nullable<User> = null;
         const socialEmail = socialData.email?.toLowerCase();
         let userByEmail: Nullable<User> = null;
@@ -158,7 +165,10 @@ export class AuthService {
             });
         }
 
-        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
+        const hash = crypto
+            .createHash("sha256")
+            .update(randomStringGenerator())
+            .digest("hex");
 
         const session = await this.sessionService.create({
             user,
@@ -386,7 +396,10 @@ export class AuthService {
         return this.usersService.findById(userJwtPayload.id);
     }
 
-    async update(userJwtPayload: JwtPayload, userDto: AuthUpdateDto): Promise<Nullable<User>> {
+    async update(
+        userJwtPayload: JwtPayload,
+        userDto: AuthUpdateDto,
+    ): Promise<Nullable<User>> {
         const currentUser = await this.usersService.findById(userJwtPayload.id);
 
         if (!currentUser) {
@@ -417,7 +430,10 @@ export class AuthService {
                 });
             }
 
-            const isValidOldPassword = await bcrypt.compare(userDto.oldPassword, currentUser.password);
+            const isValidOldPassword = await bcrypt.compare(
+                userDto.oldPassword,
+                currentUser.password,
+            );
 
             if (!isValidOldPassword) {
                 throw new UnprocessableEntityException({
@@ -455,9 +471,12 @@ export class AuthService {
                     secret: this.configService.getOrThrow("auth.confirmEmailSecret", {
                         infer: true,
                     }),
-                    expiresIn: this.configService.getOrThrow("auth.confirmEmailExpiration", {
-                        infer: true,
-                    }),
+                    expiresIn: this.configService.getOrThrow(
+                        "auth.confirmEmailExpiration",
+                        {
+                            infer: true,
+                        },
+                    ),
                 },
             );
 
@@ -482,15 +501,23 @@ export class AuthService {
     ): Promise<Omit<LoginResponseDto, "user">> {
         const session = await this.sessionService.findById(data.sessionId);
 
+        console.log(session);
+
         if (!session) {
+            console.log("invalid payload !session");
             throw new UnauthorizedException();
         }
 
         if (session.hash !== data.hash) {
+            console.log("invalid payload session.hash !== data.hash");
+            console.log(session.hash, " !== ", data.hash);
             throw new UnauthorizedException();
         }
 
-        const hash = crypto.createHash("sha256").update(randomStringGenerator()).digest("hex");
+        const hash = crypto
+            .createHash("sha256")
+            .update(randomStringGenerator())
+            .digest("hex");
 
         await this.sessionService.update(session.id, {
             hash,

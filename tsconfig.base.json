@@ -10,7 +10,9 @@
         "declaration": true,
         "composite": true,
         "paths": {
-            "@cloud/shared": ["./libs/shared/src"]
+            "@cloud/shared": [
+                "./libs/shared/src"
+            ]
         }
     }
 }

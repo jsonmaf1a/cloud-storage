@@ -9,6 +9,7 @@ import {
     AuthUpdateDtoSchema,
     AuthLoginResponseDtoSchema,
     AuthRefreshResponseDtoSchema,
+    AuthLogoutDtoSchema,
 } from "../schemas";
 import { UserSchema } from "../schemas";
 import { HttpStatus } from "../constants";
@@ -83,7 +84,7 @@ export const AuthContract = c.router(
             responses: {
                 [HttpStatus.NO_CONTENT]: z.void(),
             },
-            body: z.void(),
+            body: z.unknown(),
             summary: "Forgot password",
         },
         me: {
@@ -119,7 +120,7 @@ export const AuthContract = c.router(
         refresh: {
             method: "POST",
             path: "/refresh",
-            body: z.void(),
+            body: z.unknown(),
             responses: {
                 [HttpStatus.OK]: AuthRefreshResponseDtoSchema,
             },

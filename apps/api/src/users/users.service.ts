@@ -3,11 +3,7 @@ import { PaginationOptions } from "@/common/types/pagination-options";
 import { StatusModel } from "@/statuses/domain/status";
 import { Status } from "@/statuses/statuses";
 import { Maybe } from "@cloud/shared";
-import {
-    HttpStatus,
-    Injectable,
-    UnprocessableEntityException,
-} from "@nestjs/common";
+import { HttpStatus, Injectable, UnprocessableEntityException } from "@nestjs/common";
 import * as bcrypt from "bcrypt";
 import { User } from "./domain/user";
 import { CreateUserDto } from "./dto/create-user.dto";
@@ -50,6 +46,7 @@ export class UsersService {
             const statusObject = Object.values(Status)
                 .map(String)
                 .includes(String(createUserDto.status.id));
+
             if (!statusObject) {
                 throw new UnprocessableEntityException({
                     status: HttpStatus.UNPROCESSABLE_ENTITY,
@@ -114,10 +111,7 @@ export class UsersService {
         });
     }
 
-    async update(
-        id: User["id"],
-        updateUserDto: UpdateUserDto,
-    ): Promise<User | null> {
+    async update(id: User["id"], updateUserDto: UpdateUserDto): Promise<User | null> {
         let password: Maybe<string> = undefined;
         if (updateUserDto.password) {
             const userObject = await this.usersRepository.findById(id);

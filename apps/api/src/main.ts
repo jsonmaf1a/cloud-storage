@@ -7,21 +7,24 @@ import { ClassSerializerInterceptor, ValidationPipe } from "@nestjs/common";
 import validationOptions from "./common/utils/validation-options";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ResolvePromisesInterceptor } from "./common/utils/serializer.interceptor";
+import cookieParser from "cookie-parser";
 
 async function bootstrap() {
-    const app = await NestFactory.create(AppModule, { cors: true });
+    const app = await NestFactory.create(AppModule);
+
+    app.enableCors({
+        credentials: true,
+        origin: process.env.FRONTEND_DOMAIN,
+    });
 
     const configService = app.get(ConfigService<GeneralConfig>);
 
     useContainer(app.select(AppModule), { fallbackOnErrors: true });
 
     app.enableShutdownHooks();
-    app.setGlobalPrefix(
-        configService.getOrThrow("app.apiPrefix", { infer: true }),
-        {
-            exclude: ["/"],
-        },
-    );
+    app.setGlobalPrefix(configService.getOrThrow("app.apiPrefix", { infer: true }), {
+        exclude: ["/"],
+    });
 
     app.useGlobalPipes(new ValidationPipe(validationOptions));
     app.useGlobalInterceptors(
@@ -42,6 +45,8 @@ async function bootstrap() {
     SwaggerModule.setup("docs", app, document, {
         jsonDocumentUrl: "docs/json",
     });
+
+    app.use(cookieParser());
 
     await app.listen(configService.getOrThrow("app.port", { infer: true }));
 }
