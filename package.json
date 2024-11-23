@@ -3,17 +3,21 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "dev": "turbo dev",
-        "build": "turbo build",
-        "lint": "turbo lint",
-        "lint:ts": "turbo lint:ts"
+        "build": "nx run-many -t build",
+        "dev": "nx run-many -t dev",
+        "lint": "nx run-many -t lint",
+        "lint:ts": "nx run-many -t lint:ts"
     },
     "packageManager": "pnpm@9.12.3",
     "author": "jsonmaf1a",
     "license": "GPL-3.0-only",
     "devDependencies": {
+        "@nx/vite": "20.1.2",
+        "@nx/web": "20.1.2",
+        "nx": "20.1.2",
         "@types/node": "^20.3.1",
         "typescript": "^5.6.3",
-        "turbo": "^2.2.3"
-    }
+        "vite": "^5.0.0"
+    },
+    "dependencies": {}
 }

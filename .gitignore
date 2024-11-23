@@ -1,3 +1,7 @@
 node_modules
 .turbo
 .idea
+
+.nx/cache
+.nx/workspace-data
+vite.config.*.timestamp*
