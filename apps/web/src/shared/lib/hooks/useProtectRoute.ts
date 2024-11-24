@@ -6,6 +6,8 @@ export function useProtectRoute() {
     const navigate = useNavigate();
     const { isAuthenticated, isLoading } = useAuthStatus();
 
+    console.log(isAuthenticated);
+
     useEffect(() => {
         if (!isLoading && !isAuthenticated) {
             navigate({ to: "/auth/login", replace: true });

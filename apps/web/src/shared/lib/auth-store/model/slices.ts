@@ -9,6 +9,10 @@ import {
 import { LocalStorageService } from "@/shared/lib/storage";
 import { AuthService } from "./service";
 import { JwtUtils } from "@/shared/lib/utils";
+import { axiosInstance, tsr } from "@/shared/api";
+import { apiService } from "@/shared/api/services/ApiService";
+import { unknown } from "zod";
+import { User, UsersContract } from "@cloud/shared";
 
 const authService = new AuthService(new LocalStorageService());
 
@@ -17,7 +21,7 @@ export const createAuthSessionSlice: StateCreator<
     [["zustand/devtools", never]],
     [],
     AuthSessionSlice
-> = (set) => ({
+> = (set, get) => ({
     session: null,
     setSession: (session) => set({ session }),
 });
@@ -27,7 +31,7 @@ export const createAuthStatusSlice: StateCreator<
     [["zustand/devtools", never]],
     [],
     AuthStatusSlice
-> = (set) => ({
+> = (set, get) => ({
     isLoading: false,
     isAuthenticated: false,
     isInitialized: false,
@@ -76,10 +80,12 @@ export const createAuthActionsSlice: StateCreator<
 
                 const userId = JwtUtils.decodeJwtToken(token)?.id;
 
-                // TODO:(refactor): replace with axios
-                const user = await fetch(`/api/users/${userId}`, {
-                    headers: { Authorization: `Bearer ${token}` },
-                }).then((res) => res.json());
+                console.log(userId);
+                const user = await apiService.get({
+                    url: `/api/users/${userId}`,
+                });
+
+                console.log(user);
 
                 if (!user) {
                     setStatus({
@@ -92,7 +98,7 @@ export const createAuthActionsSlice: StateCreator<
                 }
 
                 const session: Session = {
-                    user,
+                    user: user.body as User,
                     token,
                     tokenExpires,
                 };
@@ -144,10 +150,14 @@ export const createAuthActionsSlice: StateCreator<
 
         logout: async () => {
             const { setSession, setStatus } = get();
+            const { session } = get();
 
             try {
                 setStatus({ isLoading: true });
 
+                axiosInstance.post("/api/auth/logout", {
+                    headers: { Authorization: `Bearer ${session?.token}` },
+                }); // TODO: check if token sends correctly
                 authService.clearSession();
 
                 setSession(null);
