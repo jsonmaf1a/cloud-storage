@@ -326,11 +326,11 @@ export class AuthService {
             });
         }
 
-        const tokenExpiresIn = this.configService.getOrThrow("auth.forgotExpiration", {
+        const tokenExpiration = this.configService.getOrThrow("auth.forgotExpiration", {
             infer: true,
         });
 
-        const tokenExpires = Date.now() + ms(tokenExpiresIn);
+        const tokenExpiresIn = Date.now() + ms(tokenExpiration);
 
         const hash = await this.jwtService.signAsync(
             {
@@ -340,7 +340,7 @@ export class AuthService {
                 secret: this.configService.getOrThrow("auth.forgotSecret", {
                     infer: true,
                 }),
-                expiresIn: tokenExpiresIn,
+                expiresIn: tokenExpiration,
             },
         );
 
@@ -348,7 +348,7 @@ export class AuthService {
             to: email,
             data: {
                 hash,
-                tokenExpires,
+                tokenExpiration: tokenExpiresIn,
             },
         });
     }
@@ -551,14 +551,11 @@ export class AuthService {
         sessionId: Session["id"];
         hash: Session["hash"];
     }) {
-        const tokenExpiresIn = this.configService.getOrThrow("auth.accessExpiration", {
+        const tokenExpiration = this.configService.getOrThrow("auth.accessExpiration", {
             infer: true,
         });
 
-        console.log(tokenExpiresIn);
-        console.log(ms(tokenExpiresIn));
-
-        const tokenExpiration = Date.now() + ms(tokenExpiresIn);
+        const tokenExpiresIn = Date.now() + ms(tokenExpiration);
 
         const [token, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
@@ -570,7 +567,7 @@ export class AuthService {
                     secret: this.configService.getOrThrow("auth.secret", {
                         infer: true,
                     }),
-                    expiresIn: tokenExpiresIn,
+                    expiresIn: tokenExpiration,
                 },
             ),
 
@@ -593,7 +590,7 @@ export class AuthService {
         return {
             token,
             refreshToken,
-            tokenExpiration,
+            tokenExpiration: tokenExpiresIn,
         };
     }
 }

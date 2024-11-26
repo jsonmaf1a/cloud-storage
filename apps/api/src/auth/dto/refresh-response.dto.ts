@@ -8,5 +8,5 @@ export class RefreshResponseDto {
     refreshToken: string;
 
     @ApiProperty()
-    tokenExpires: number;
+    tokenExpiration: number;
 }

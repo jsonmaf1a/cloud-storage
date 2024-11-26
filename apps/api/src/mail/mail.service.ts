@@ -63,7 +63,7 @@ export class MailService {
     }
 
     async forgotPassword(
-        mailData: MailData<{ hash: string; tokenExpires: number }>,
+        mailData: MailData<{ hash: string; tokenExpiration: number }>,
     ): Promise<void> {
         const i18n = I18nContext.current();
         let resetPasswordTitle: Maybe<string>;
@@ -73,14 +73,13 @@ export class MailService {
         let text4: Maybe<string>;
 
         if (i18n) {
-            [resetPasswordTitle, text1, text2, text3, text4] =
-                await Promise.all([
-                    i18n.t("common.resetPassword"),
-                    i18n.t("reset-password.text1"),
-                    i18n.t("reset-password.text2"),
-                    i18n.t("reset-password.text3"),
-                    i18n.t("reset-password.text4"),
-                ]);
+            [resetPasswordTitle, text1, text2, text3, text4] = await Promise.all([
+                i18n.t("common.resetPassword"),
+                i18n.t("reset-password.text1"),
+                i18n.t("reset-password.text2"),
+                i18n.t("reset-password.text3"),
+                i18n.t("reset-password.text4"),
+            ]);
         }
 
         const url = new URL(
@@ -89,7 +88,7 @@ export class MailService {
             })}/auth/password-change`,
         );
         url.searchParams.set("hash", mailData.data.hash);
-        url.searchParams.set("expires", mailData.data.tokenExpires.toString());
+        url.searchParams.set("expires", mailData.data.tokenExpiration.toString());
 
         await this.mailerService.sendMail({
             to: mailData.to,
