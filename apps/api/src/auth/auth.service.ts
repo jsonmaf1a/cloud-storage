@@ -7,12 +7,16 @@ import { SocialData } from "@/social/social.interface";
 import { Status } from "@/statuses/statuses";
 import { User } from "@/users/domain/user";
 import { UsersService } from "@/users/users.service";
-import { AuthLoginResponseDto, Nullable, UserSchema } from "@cloud/shared";
+import {
+    AuthLoginResponseDto,
+    AuthRefreshResponseDto,
+    Nullable,
+    UserSchema,
+} from "@cloud/shared";
 import {
     HttpStatus,
     Injectable,
     NotFoundException,
-    Res,
     UnauthorizedException,
     UnprocessableEntityException,
 } from "@nestjs/common";
@@ -27,7 +31,6 @@ import { AuthProviders } from "./auth-providers";
 import { AuthLoginDto } from "./dto/auth-login.dto";
 import { AuthRegisterDto } from "./dto/auth-register.dto";
 import { AuthUpdateDto } from "./dto/auth-update.dto";
-import { LoginResponseDto } from "./dto/login-response.dto";
 import { JwtPayload } from "./types/jwt-payload";
 import { JwtRefreshPayload } from "./types/jwt-refresh-payload";
 
@@ -92,7 +95,7 @@ export class AuthService {
             hash,
         });
 
-        const { token, refreshToken, tokenExpires } = await this.getTokensData({
+        const { token, refreshToken, tokenExpiration } = await this.getTokensData({
             id: user.id,
             sessionId: session.id,
             hash,
@@ -101,14 +104,14 @@ export class AuthService {
         const plainUser = instanceToPlain(user, {
             groups: [ExposeGroup.Self],
             excludeExtraneousValues: false,
-        }) as User;
+        });
 
         const validatedUser = UserSchema.parse(plainUser);
 
         return {
             refreshToken,
             token,
-            tokenExpires,
+            tokenExpiration,
             user: validatedUser,
         };
     }
@@ -178,7 +181,7 @@ export class AuthService {
         const {
             token: jwtToken,
             refreshToken,
-            tokenExpires,
+            tokenExpiration,
         } = await this.getTokensData({
             id: user.id,
             sessionId: session.id,
@@ -195,7 +198,7 @@ export class AuthService {
         return {
             refreshToken,
             token: jwtToken,
-            tokenExpires,
+            tokenExpiration,
             user: validatedUser,
         };
     }
@@ -498,13 +501,12 @@ export class AuthService {
 
     async refreshToken(
         data: Pick<JwtRefreshPayload, "sessionId" | "hash">,
-    ): Promise<Omit<LoginResponseDto, "user">> {
+    ): Promise<AuthRefreshResponseDto> {
         const session = await this.sessionService.findById(data.sessionId);
 
         console.log(session);
 
         if (!session) {
-            console.log("invalid payload !session");
             throw new UnauthorizedException();
         }
 
@@ -523,7 +525,7 @@ export class AuthService {
             hash,
         });
 
-        const { token, refreshToken, tokenExpires } = await this.getTokensData({
+        const { token, refreshToken, tokenExpiration } = await this.getTokensData({
             id: session.user.id,
             sessionId: session.id,
             hash,
@@ -532,12 +534,12 @@ export class AuthService {
         return {
             token,
             refreshToken,
-            tokenExpires,
+            tokenExpiration,
         };
     }
 
-    async softDelete(user: User): Promise<void> {
-        await this.usersService.remove(user.id);
+    async softDelete(userId: User["id"]): Promise<void> {
+        await this.usersService.remove(userId);
     }
 
     async logout(data: Pick<JwtRefreshPayload, "sessionId">) {
@@ -549,14 +551,14 @@ export class AuthService {
         sessionId: Session["id"];
         hash: Session["hash"];
     }) {
-        const tokenExpiresIn = this.configService.getOrThrow("auth.expiration", {
+        const tokenExpiresIn = this.configService.getOrThrow("auth.accessExpiration", {
             infer: true,
         });
 
         console.log(tokenExpiresIn);
         console.log(ms(tokenExpiresIn));
 
-        const tokenExpires = Date.now() + ms(tokenExpiresIn);
+        const tokenExpiration = Date.now() + ms(tokenExpiresIn);
 
         const [token, refreshToken] = await Promise.all([
             this.jwtService.signAsync(
@@ -591,7 +593,7 @@ export class AuthService {
         return {
             token,
             refreshToken,
-            tokenExpires,
+            tokenExpiration,
         };
     }
 }

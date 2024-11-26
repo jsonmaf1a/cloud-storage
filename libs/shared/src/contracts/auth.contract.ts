@@ -46,7 +46,7 @@ export const AuthContract = c.router(
             method: "POST",
             path: "/email/login",
             responses: {
-                [HttpStatus.OK]: AuthLoginResponseDtoSchema,
+                [HttpStatus.OK]: AuthLoginResponseDtoSchema.omit({ refreshToken: true }),
             },
             body: AuthLoginDtoSchema,
             summary: "Login with email",
@@ -55,7 +55,9 @@ export const AuthContract = c.router(
             method: "POST",
             path: "/email/register",
             responses: {
-                [HttpStatus.CREATED]: AuthLoginResponseDtoSchema,
+                [HttpStatus.CREATED]: AuthLoginResponseDtoSchema.omit({
+                    refreshToken: true,
+                }),
             },
             body: AuthRegisterDtoSchema,
             summary: "Register with email",
@@ -122,7 +124,9 @@ export const AuthContract = c.router(
             path: "/refresh",
             body: z.unknown(),
             responses: {
-                [HttpStatus.OK]: AuthRefreshResponseDtoSchema,
+                [HttpStatus.OK]: AuthRefreshResponseDtoSchema.omit({
+                    refreshToken: true,
+                }),
             },
         },
     },

@@ -1,11 +1,6 @@
-import { ExposeGroup } from "@/common/enums/expose-group";
 import { JwtRefreshRequest, JwtRequest } from "@/common/types/request";
 import { User } from "@/users/domain/user";
-import {
-    AuthContract,
-    AuthLoginResponseDtoSchema,
-    AuthRefreshResponseDtoSchema,
-} from "@cloud/shared";
+import { AuthContract, UserSchema } from "@cloud/shared";
 import {
     Body,
     Controller,
@@ -17,13 +12,12 @@ import {
     Post,
     Request,
     Res,
-    SerializeOptions,
     UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { ApiBearerAuth, ApiOkResponse, ApiTags } from "@nestjs/swagger";
 import { TsRestException, TsRestHandler, tsRestHandler } from "@ts-rest/nest";
-import { Response } from "express";
+import { CookieOptions, Response } from "express";
 import { AuthService } from "./auth.service";
 import { AuthConfirmEmailDto } from "./dto/auth-confirm-email.dto";
 import { AuthForgotPasswordDto } from "./dto/auth-forgot-password";
@@ -40,12 +34,14 @@ const c = AuthContract;
 @Controller("auth")
 export class AuthController {
     private readonly REFRESH_TOKEN_COOKIE_KEY = "refreshToken";
+    private readonly REFRESH_TOKEN_COOKIE_OPTS = {
+        httpOnly: true,
+        sameSite: "none" as const,
+        secure: true,
+    };
 
     constructor(private readonly service: AuthService) {}
 
-    @SerializeOptions({
-        groups: [ExposeGroup.Self],
-    })
     @Post("email/login")
     @ApiOkResponse({
         type: LoginResponseDto,
@@ -59,12 +55,15 @@ export class AuthController {
         return tsRestHandler(c.emailLogin, async () => {
             const { refreshToken, ...data } = await this.service.validateLogin(loginDto);
 
-            const validatedData = AuthLoginResponseDtoSchema.parse(data);
-
-            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
+            this.setCookie(
+                res,
+                this.REFRESH_TOKEN_COOKIE_KEY,
+                refreshToken,
+                this.REFRESH_TOKEN_COOKIE_OPTS,
+            );
             return {
                 status: HttpStatus.OK,
-                body: validatedData,
+                body: data,
             };
         });
     }
@@ -84,12 +83,15 @@ export class AuthController {
                 password: createUserDto.password,
             });
 
-            const validatedData = AuthLoginResponseDtoSchema.parse(data);
-
-            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
+            this.setCookie(
+                res,
+                this.REFRESH_TOKEN_COOKIE_KEY,
+                refreshToken,
+                this.REFRESH_TOKEN_COOKIE_OPTS,
+            );
             return {
                 status: HttpStatus.CREATED,
-                body: validatedData,
+                body: data,
             };
         });
     }
@@ -153,9 +155,6 @@ export class AuthController {
     }
 
     @ApiBearerAuth()
-    @SerializeOptions({
-        groups: [ExposeGroup.Self],
-    })
     @Get("me")
     @UseGuards(AuthGuard("jwt"))
     @ApiOkResponse({
@@ -165,8 +164,8 @@ export class AuthController {
     @TsRestHandler(c.me)
     async me(@Request() req: JwtRequest) {
         return tsRestHandler(c.me, async () => {
-            const _user = await this.service.me(req.user);
-            if (!_user) {
+            const user = await this.service.me(req.user);
+            if (!user) {
                 throw new TsRestException(c.me, {
                     status: HttpStatus.NOT_FOUND,
                     body: {
@@ -176,16 +175,11 @@ export class AuthController {
                 });
             }
 
-            const user = {
-                ..._user,
-                status: _user.status
-                    ? { id: _user.status.id, name: _user.status.name }
-                    : undefined,
-            };
+            const validatedUser = await UserSchema.parseAsync(user);
 
             return {
                 status: HttpStatus.OK,
-                body: user,
+                body: validatedUser,
             };
         });
     }
@@ -193,9 +187,6 @@ export class AuthController {
     @ApiBearerAuth()
     @ApiOkResponse({
         type: RefreshResponseDto,
-    })
-    @SerializeOptions({
-        groups: [ExposeGroup.Self],
     })
     @Post("refresh")
     @UseGuards(AuthGuard("jwt-refresh"))
@@ -211,12 +202,15 @@ export class AuthController {
                 hash: request.user.hash,
             });
 
-            const validatedData = AuthRefreshResponseDtoSchema.parse(data);
-
-            res.cookie(this.REFRESH_TOKEN_COOKIE_KEY, refreshToken, { httpOnly: true });
+            this.setCookie(
+                res,
+                this.REFRESH_TOKEN_COOKIE_KEY,
+                refreshToken,
+                this.REFRESH_TOKEN_COOKIE_OPTS,
+            );
             return {
                 status: HttpStatus.OK,
-                body: validatedData,
+                body: data,
             };
         });
     }
@@ -240,9 +234,6 @@ export class AuthController {
     }
 
     @ApiBearerAuth()
-    @SerializeOptions({
-        groups: [ExposeGroup.Self],
-    })
     @Patch("me")
     @UseGuards(AuthGuard("jwt"))
     @HttpCode(HttpStatus.OK)
@@ -252,9 +243,9 @@ export class AuthController {
     @TsRestHandler(c.updateMe)
     async update(@Request() request: JwtRequest, @Body() userDto: AuthUpdateDto) {
         return tsRestHandler(c.updateMe, async () => {
-            const _user = await this.service.update(request.user, userDto);
+            const user = await this.service.update(request.user, userDto);
 
-            if (!_user) {
+            if (!user) {
                 throw new TsRestException(c.me, {
                     status: HttpStatus.NOT_FOUND,
                     body: {
@@ -264,16 +255,11 @@ export class AuthController {
                 });
             }
 
-            const user = {
-                ..._user,
-                status: _user.status
-                    ? { id: _user.status.id, name: _user.status.name }
-                    : undefined,
-            };
+            const validatedUser = UserSchema.parse(user);
 
             return {
                 status: HttpStatus.OK,
-                body: user,
+                body: validatedUser,
             };
         });
     }
@@ -283,15 +269,18 @@ export class AuthController {
     @UseGuards(AuthGuard("jwt"))
     @HttpCode(HttpStatus.NO_CONTENT)
     @TsRestHandler(c.deleteMe)
-    // biome-ignore lint/suspicious/noExplicitAny: <explanation>
-    async delete(@Request() request: any) {
+    async delete(@Request() request: JwtRequest) {
         return tsRestHandler(c.deleteMe, async () => {
-            await this.service.softDelete(request.session);
+            await this.service.softDelete(request.user.id);
 
             return {
                 status: HttpStatus.NO_CONTENT,
                 body: undefined,
             };
         });
+    }
+
+    private setCookie(res: Response, key: string, value: string, opts: CookieOptions) {
+        res.cookie(key, value, opts);
     }
 }

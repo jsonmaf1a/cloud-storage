@@ -5,7 +5,7 @@ import { IsString } from "class-validator";
 
 export type AuthConfig = {
     secret?: string;
-    expiration?: string;
+    accessExpiration?: string;
     refreshSecret?: string;
     refreshExpiration?: string;
     forgotSecret?: string;
@@ -45,7 +45,7 @@ export default registerAs<AuthConfig>("auth", () => {
 
     return {
         secret: process.env.AUTH_JWT_SECRET,
-        expiration: process.env.AUTH_JWT_TOKEN_EXPIRATION,
+        accessExpiration: process.env.AUTH_JWT_TOKEN_EXPIRATION,
         refreshSecret: process.env.AUTH_REFRESH_SECRET,
         refreshExpiration: process.env.AUTH_REFRESH_TOKEN_EXPIRATION,
         forgotSecret: process.env.AUTH_FORGOT_SECRET,

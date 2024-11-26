@@ -52,8 +52,8 @@ export type AuthUpdateDto = z.infer<typeof AuthUpdateDtoSchema>;
 export const AuthLoginResponseDtoSchema = z
     .object({
         token: z.string(),
-        // refreshToken: z.string(),
-        tokenExpires: z.number(),
+        tokenExpiration: z.number(),
+        refreshToken: z.string(),
         user: UserSchema,
     })
     .passthrough();
@@ -63,8 +63,8 @@ export type AuthLoginResponseDto = z.infer<typeof AuthLoginResponseDtoSchema>;
 export const AuthRefreshResponseDtoSchema = z
     .object({
         token: z.string(),
-        // refreshToken: z.string(),
-        tokenExpires: z.number(),
+        refreshToken: z.string(),
+        tokenExpiration: z.number(),
     })
     .passthrough();
 
