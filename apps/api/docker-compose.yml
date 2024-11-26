@@ -9,11 +9,6 @@ services:
     ports:
       - 5432:5432
 
-  maildev:
-    image: maildev/maildev
-    ports:
-      - "1080:1080"
-
   # redis:
   #   image: redis:7-alpine
   #   expose:
