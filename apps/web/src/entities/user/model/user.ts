@@ -1,4 +1,4 @@
-import { Nullable, StatusModel } from "@cloud/shared";
+import { User as BaseUser, Nullable, StatusModel } from "@cloud/shared";
 import { UserInterface } from "./user.interface";
 
 export class User implements UserInterface {
@@ -17,6 +17,22 @@ export class User implements UserInterface {
         public readonly status?: StatusModel,
         public readonly avatarUrl?: Nullable<string>,
     ) {}
+
+    static fromApiResponse(user: BaseUser) {
+        return new User(
+            user.id,
+            user.email,
+            user.provider,
+            user.createdAt,
+            user.updatedAt,
+            user.deletedAt,
+            user.firstName,
+            user.lastName,
+            user.socialId,
+            user.status,
+            user.avatarUrl,
+        );
+    }
 
     getFullName() {
         return `${this.firstName || ""} ${this.lastName || ""}`.trim();
