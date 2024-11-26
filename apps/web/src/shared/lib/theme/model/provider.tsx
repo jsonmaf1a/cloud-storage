@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { ThemeContext } from "./context";
-import { THEME_CONSTANTS } from "./constants";
-import { Theme } from "@/shared/types/theme";
-import { useMediaQuery } from "../../hooks/useMediaQuery";
 import { ReactNode } from "@tanstack/react-router";
+import { Theme } from "../theme";
+import { THEME_CONFIG } from "../config/constants";
+import { useMediaQuery } from "@/shared/hooks";
 
 export type ThemeProviderProps = {
     children: ReactNode;
@@ -17,8 +17,8 @@ export function isValidTheme(theme: string): theme is Theme {
 
 export function ThemeProvider({
     children,
-    defaultTheme = THEME_CONSTANTS.DEFAULT_THEME,
-    storageKey = THEME_CONSTANTS.STORAGE_KEY,
+    defaultTheme = THEME_CONFIG.DEFAULT_THEME,
+    storageKey = THEME_CONFIG.STORAGE_KEY,
 }: ThemeProviderProps) {
     const [theme, setThemeState] = useState<Theme>(() => {
         try {
@@ -48,7 +48,7 @@ export function ThemeProvider({
         const root = window.document.documentElement;
         const activeTheme = theme === "system" ? systemTheme : theme;
 
-        for (const className of THEME_CONSTANTS.THEME_CLASSES) {
+        for (const className of THEME_CONFIG.THEME_CLASSES) {
             root.classList.remove(className);
         }
 

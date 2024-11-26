@@ -1,9 +1,10 @@
-import { Nullable, User } from "@cloud/shared";
+import { User } from "@/entities/user";
+import { Nullable } from "@cloud/shared";
 
 export interface Session {
     user: User;
     token: string;
-    tokenExpires: number;
+    tokenExpiration: number;
 }
 
 export interface AuthSessionSlice {
@@ -15,7 +16,7 @@ export interface AuthStatusSlice {
     isLoading: boolean;
     isAuthenticated: boolean;
     isInitialized: boolean;
-    error: Nullable<string>;
+    error?: string;
     setStatus: (status: Partial<AuthStatus>) => void;
     setInitialized: (state: boolean) => void;
 }

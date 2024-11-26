@@ -1,6 +1,6 @@
 import { cva, VariantProps } from "class-variance-authority";
 import { forwardRef, InputHTMLAttributes } from "react";
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/utils";
 
 const inputVariants = cva("inline-flex items-center justify-center rounded-md p-3", {
     variants: {
