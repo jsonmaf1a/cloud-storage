@@ -1,9 +1,10 @@
+import { User } from "@/entities/user";
+import { useAuthActions } from "@/features/auth-store";
+import { AuthRegisterDto } from "@cloud/shared";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
-import { AuthRegisterDto } from "@cloud/shared";
 import { toast } from "react-toastify";
 import { useRegisterMutation } from "./useRegisterMutation";
-import { useAuthActions } from "@/shared/lib/auth-store";
 
 export const useRegister = () => {
     const { login } = useAuthActions();
@@ -22,9 +23,11 @@ export const useRegister = () => {
                     return;
                 }
 
-                const { user, token, tokenExpires } = result.data.body;
+                const { user, token, tokenExpiration } = result.data.body;
 
-                await login({ user, token, tokenExpires });
+                const localUser = User.fromApiResponse(user);
+
+                await login({ user: localUser, token, tokenExpiration });
 
                 navigate({ to: "/auth/confirm-email" });
                 toast("Register success");

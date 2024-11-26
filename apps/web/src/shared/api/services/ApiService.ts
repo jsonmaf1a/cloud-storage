@@ -3,9 +3,9 @@ import { ApiFetcherArgs } from "@ts-rest/core";
 import { initTsrReactQuery } from "@ts-rest/react-query/v5";
 import { AxiosResponse, isAxiosError, Method } from "axios";
 import { axiosInstance } from "../config/axios";
-import { AUTH_STORAGE_KEYS } from "@/shared/constants";
+import { tokenService } from "@/shared/lib/token/TokenService";
 
-interface RequestArgs {
+interface RequestArgs<T> {
     url: string;
     headers?: Record<string, string>;
     // biome-ignore lint/suspicious/noExplicitAny: ...
@@ -18,8 +18,8 @@ class ApiService {
         private readonly contract = ApiContract,
     ) {}
 
-    private request(method: Method, args: RequestArgs) {
-        return this.protectedRequest({
+    private request<T>(method: Method, args: RequestArgs) {
+        return this.protectedRequest<T>({
             path: args.url,
             body: method === "GET" || method === "DELETE" ? undefined : args.body,
             headers: args.headers,
@@ -27,30 +27,30 @@ class ApiService {
         });
     }
 
-    public get(args: RequestArgs) {
-        return this.request("GET", args);
+    public get<T>(args: RequestArgs) {
+        return this.request<T>("GET", args);
     }
 
-    public post(args: RequestArgs) {
-        return this.request("POST", args);
+    public post<T>(args: RequestArgs) {
+        return this.request<T>("POST", args);
     }
 
-    public put(args: RequestArgs) {
-        return this.request("PUT", args);
+    public put<T>(args: RequestArgs) {
+        return this.request<T>("PUT", args);
     }
 
-    public patch(args: RequestArgs) {
-        return this.request("PATCH", args);
+    public patch<T>(args: RequestArgs) {
+        return this.request<T>("PATCH", args);
     }
 
-    public delete(args: RequestArgs) {
-        return this.request("DELETE", args);
+    public delete<T>(args: RequestArgs) {
+        return this.request<T>("DELETE", args);
     }
 
-    private async protectedRequest(args: ApiFetcherArgs | Partial<ApiFetcherArgs>) {
+    private async protectedRequest<T>(args: ApiFetcherArgs | Partial<ApiFetcherArgs>) {
         const { headers, method, body, path } = args;
 
-        const accessToken = localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN);
+        const accessToken = tokenService.getStoredToken();
 
         const updatedHeaders = {
             ...headers,
@@ -58,7 +58,7 @@ class ApiService {
         };
 
         try {
-            const result = await axiosInstance.request({
+            const result = await axiosInstance.request<T>({
                 method: method as Method,
                 url: path,
                 headers: {

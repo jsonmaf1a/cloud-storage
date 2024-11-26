@@ -1,9 +1,9 @@
-import { useTsrErrorHandler } from "@/shared/lib/hooks/useTsrErrorHandler";
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { toast } from "react-toastify";
 import { CONFIRM_EMAIL_ERRORS, CONFIRMATION_TIMEOUT } from "../config/constants";
 import { useConfirmEmailMutation } from "./useConfirmEmailMutation";
+import { useTsrErrorHandler } from "@/shared/hooks";
 
 export function useConfirmEmail(hash: string | undefined) {
     const navigate = useNavigate({ from: "/auth/confirm-email" });

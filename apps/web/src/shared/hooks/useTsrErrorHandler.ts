@@ -1,11 +1,7 @@
-import {
-    EndpointErrors,
-    ErrorHandlerOptions,
-    ErrorResponse,
-} from "@/shared/types/errors";
+import { EndpointErrors, ErrorHandlerOptions, ErrorResponse } from "@/shared/types";
+import { isErrorResponse } from "@/shared/utils";
 import { AppRoute, exhaustiveGuard } from "@ts-rest/core";
 import { isFetchError, isUnknownErrorResponse } from "@ts-rest/react-query/v5";
-import { isErrorResponse } from "../utils/isErrorResponse";
 import { useCallback } from "react";
 
 const defaultOptions: ErrorHandlerOptions = {

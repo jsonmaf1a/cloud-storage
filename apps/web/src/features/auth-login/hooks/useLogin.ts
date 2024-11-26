@@ -1,4 +1,5 @@
-import { useAuthActions } from "@/shared/lib/auth-store";
+import { User } from "@/entities/user";
+import { useAuthActions } from "@/features/auth-store";
 import { AuthLoginDto } from "@cloud/shared";
 import { useNavigate } from "@tanstack/react-router";
 import { useCallback } from "react";
@@ -22,9 +23,11 @@ export const useLogin = () => {
                     return;
                 }
 
-                const { user, token, tokenExpires } = result.data.body;
+                const { user, token, tokenExpiration } = result.data.body;
 
-                await login({ user, token, tokenExpires });
+                const localUser = User.fromApiResponse(user);
+
+                await login({ user: localUser, token, tokenExpiration });
                 toast("Login success");
                 await navigate({ to: "/" });
             } catch (error) {

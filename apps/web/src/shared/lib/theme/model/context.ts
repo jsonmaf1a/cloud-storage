@@ -1,5 +1,5 @@
 import { createContext } from "react";
-import { Theme } from "@/shared/types/theme";
+import { Theme } from "../theme";
 
 export interface ThemeState {
     theme: Theme;

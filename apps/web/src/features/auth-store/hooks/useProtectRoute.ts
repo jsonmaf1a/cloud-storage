@@ -1,6 +1,6 @@
 import { useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
-import { useAuthStatus } from "../auth-store";
+import { useAuthStatus } from "./useAuth";
 
 export function useProtectRoute() {
     const navigate = useNavigate();

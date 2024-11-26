@@ -1,3 +1,6 @@
+import { getMe } from "@/entities/user";
+import { apiService } from "@/shared/api/services/ApiService";
+import { tokenService } from "@/shared/lib/token/TokenService";
 import { StateCreator } from "zustand";
 import {
     AuthActionsSlice,
@@ -6,22 +9,13 @@ import {
     AuthStatusSlice,
     Session,
 } from "../model/types";
-import { LocalStorageService } from "@/shared/lib/storage";
-import { AuthService } from "./service";
-import { JwtUtils } from "@/shared/lib/utils";
-import { axiosInstance, tsr } from "@/shared/api";
-import { apiService } from "@/shared/api/services/ApiService";
-import { unknown } from "zod";
-import { User, UsersContract } from "@cloud/shared";
-
-const authService = new AuthService(new LocalStorageService());
 
 export const createAuthSessionSlice: StateCreator<
     AuthState,
     [["zustand/devtools", never]],
     [],
     AuthSessionSlice
-> = (set, get) => ({
+> = (set) => ({
     session: null,
     setSession: (session) => set({ session }),
 });
@@ -31,11 +25,10 @@ export const createAuthStatusSlice: StateCreator<
     [["zustand/devtools", never]],
     [],
     AuthStatusSlice
-> = (set, get) => ({
+> = (set) => ({
     isLoading: false,
     isAuthenticated: false,
     isInitialized: false,
-    error: null,
     setStatus: (status) =>
         set((state) => ({
             ...state,
@@ -65,27 +58,20 @@ export const createAuthActionsSlice: StateCreator<
             try {
                 setStatus({ isLoading: true });
 
-                const token = authService.getStoredToken();
-                const tokenExpires = authService.getStoredTokenExpires();
+                const token = tokenService.getStoredToken();
+                const tokenExpiration = tokenService.getStoredTokenExpiration();
 
-                if (!token || !tokenExpires) {
+                // TODO: check token expiration
+                if (!token || !tokenExpiration) {
                     setStatus({
                         isAuthenticated: false,
-                        error: null,
                     });
                     setSession(null);
                     setInitialized(true);
                     return;
                 }
 
-                const userId = JwtUtils.decodeJwtToken(token)?.id;
-
-                console.log(userId);
-                const user = await apiService.get({
-                    url: `/api/users/${userId}`,
-                });
-
-                console.log(user);
+                const user = await getMe();
 
                 if (!user) {
                     setStatus({
@@ -98,22 +84,21 @@ export const createAuthActionsSlice: StateCreator<
                 }
 
                 const session: Session = {
-                    user: user.body as User,
+                    user,
                     token,
-                    tokenExpires,
+                    tokenExpiration,
                 };
 
                 setSession(session);
                 setStatus({
                     isAuthenticated: true,
-                    error: null,
                 });
             } catch (error) {
                 setStatus({
                     isAuthenticated: false,
                     error:
-                        typeof error === "string"
-                            ? error
+                        error instanceof Error
+                            ? error.message
                             : "Auth store initialization error",
                 });
                 setSession(null);
@@ -129,12 +114,11 @@ export const createAuthActionsSlice: StateCreator<
             try {
                 setStatus({ isLoading: true });
 
-                authService.storeSession(session.token, session.tokenExpires);
+                tokenService.store(session.token, session.tokenExpiration);
 
                 setSession(session);
                 setStatus({
                     isAuthenticated: true,
-                    error: null,
                 });
             } catch (error) {
                 console.error(error);
@@ -150,20 +134,17 @@ export const createAuthActionsSlice: StateCreator<
 
         logout: async () => {
             const { setSession, setStatus } = get();
-            const { session } = get();
 
             try {
                 setStatus({ isLoading: true });
 
-                axiosInstance.post("/api/auth/logout", {
-                    headers: { Authorization: `Bearer ${session?.token}` },
-                }); // TODO: check if token sends correctly
-                authService.clearSession();
+                apiService.post({ url: "/api/auth/logout" });
+
+                tokenService.clear();
 
                 setSession(null);
                 setStatus({
                     isAuthenticated: false,
-                    error: null,
                 });
             } catch (error) {
                 console.error(error);

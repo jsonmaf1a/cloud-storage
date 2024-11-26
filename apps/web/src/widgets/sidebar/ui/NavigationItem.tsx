@@ -1,4 +1,4 @@
-import { cn } from "@/shared/lib/utils";
+import { cn } from "@/shared/utils";
 import { Link } from "@tanstack/react-router";
 import { NavigationItemType } from "../model/types";
 

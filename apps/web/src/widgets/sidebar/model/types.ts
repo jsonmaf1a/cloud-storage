@@ -1,4 +1,4 @@
-import { ValidRoutes } from "@/shared/types/validRoutes";
+import { ValidRoutes } from "@/shared/types";
 import { LucideIcon } from "lucide-react";
 
 export type NavigationItemType = {

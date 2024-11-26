@@ -1,7 +1,11 @@
 import { create } from "zustand";
-import { AuthState } from "../model/types";
 import { devtools } from "zustand/middleware";
-import { createAuthActionsSlice, createAuthSessionSlice, createAuthStatusSlice } from "./slices";
+import { AuthState } from "../model/types";
+import {
+    createAuthActionsSlice,
+    createAuthSessionSlice,
+    createAuthStatusSlice,
+} from "./slices";
 
 export const useAuthStore = create<AuthState>()(
     devtools(

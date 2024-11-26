@@ -1,6 +1,6 @@
+import { useAuthActions, useAuthSession, useAuthStatus } from "@/features/auth-store";
 import { Loader } from "@/shared/components/Loader.tsx";
-import { useAuthActions, useAuthSession, useAuthStatus } from "@/shared/lib/auth-store";
-import { PropsWithChildren, useEffect } from "react";
+import { PropsWithChildren, Suspense, useEffect } from "react";
 
 export const AuthProvider = ({ children }: PropsWithChildren) => {
     const { initialize } = useAuthActions();
@@ -8,18 +8,18 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
     const session = useAuthSession();
 
     useEffect(() => {
-        if (session === null) {
+        if (!session && !isLoading) {
             initialize();
         }
-    }, [initialize, session]);
+    }, [initialize, session, isLoading]);
 
     if (isLoading) {
         return <Loader />;
     }
 
     if (error) {
-        return <div>Error: {error}</div>;
+        throw new Error(error);
     }
 
-    return <>{children}</>;
+    return <Suspense fallback={<Loader />}>{children}</Suspense>;
 };

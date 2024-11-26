@@ -1,14 +1,13 @@
-import { AUTH_STORAGE_KEYS } from "@/shared/constants";
+import { tokenService } from "@/shared/lib/token/TokenService";
 import { AuthRefreshResponseDto } from "@cloud/shared";
 import { AxiosInstance } from "axios";
 
 export const addJwtInterceptor = (axios: AxiosInstance) => {
     axios.interceptors.request.use(
         async (config) => {
-            const token = localStorage.getItem(AUTH_STORAGE_KEYS.TOKEN);
+            const token = tokenService.getStoredToken();
 
             if (token) {
-                console.log("token", token);
                 config.headers.Authorization = `Bearer ${token}`;
             }
 
@@ -25,23 +24,25 @@ export const addJwtInterceptor = (axios: AxiosInstance) => {
             if (!config) return Promise.reject(error);
 
             if (error.response?.status === 401 && !config.sent) {
-                console.log("refresh");
-
                 config.sent = true;
-                const response = (await axios
-                    .post("/api/auth/refresh")
-                    .then((res) => res.data)) as AuthRefreshResponseDto;
 
-                const { token, tokenExpires } = response;
+                try {
+                    const response =
+                        await axios.post<AuthRefreshResponseDto>("/api/auth/refresh");
 
-                localStorage.setItem(AUTH_STORAGE_KEYS.TOKEN, token);
-                localStorage.setItem(
-                    AUTH_STORAGE_KEYS.TOKEN_EXPIRES,
-                    String(tokenExpires),
-                );
+                    const { token, tokenExpiration } = response.data;
 
-                if (token) {
-                    return axios(config);
+                    tokenService.store(token, tokenExpiration);
+
+                    if (token) {
+                        return axios(config);
+                    }
+                } catch (refreshError) {
+                    console.error("Token refresh failed:", refreshError);
+
+                    tokenService.clear();
+
+                    await axios.post("/api/auth/logout");
                 }
             }
 
