@@ -4,11 +4,10 @@
     "version": "1.0.0",
     "private": true,
     "scripts": {
-        "db": "docker compose up",
-        "maildev": "maildev",
+        "compose": "docker compose up",
         "build": "nest build",
         "start": "nest start",
-        "dev": "pnpm run db & pnpm run maildev & nest start --watch",
+        "dev": "pnpm run compose & nest start --watch",
         "lint:ts": "tsc --noEmit",
         "start:debug": "nest start --debug --watch",
         "start:prod": "node dist/main",
